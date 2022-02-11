@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JaVisitei.Brasil.Api", "src\JaVisitei.Brasil.Api\JaVisitei.Brasil.Api.csproj", "{F816696A-D62B-4B22-80C7-5F27B244A684}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F816696A-D62B-4B22-80C7-5F27B244A684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F816696A-D62B-4B22-80C7-5F27B244A684}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F816696A-D62B-4B22-80C7-5F27B244A684}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F816696A-D62B-4B22-80C7-5F27B244A684}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E312A9C-ECD5-49E5-9702-0789109AD474}
+	EndGlobalSection
+EndGlobal
