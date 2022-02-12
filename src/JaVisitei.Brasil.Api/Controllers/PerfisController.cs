@@ -1,8 +1,8 @@
-﻿using JaVisitei.Brasil.Business.ViewModels.Request;
+﻿using JaVisitei.Brasil.Business.Service.Interfaces;
+using JaVisitei.Brasil.Business.ViewModels.Request;
 using JaVisitei.Brasil.Business.ViewModels.Response;
-using JaVisitei.Brasil.Model.Models;
+using JaVisitei.Brasil.Data.Entities;
 using JaVisitei.Brasil.Security;
-using JaVisitei.Brasil.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

@@ -1,12 +1,9 @@
-﻿using JaVisitei.Brasil.Model.Models;
-using JaVisitei.Brasil.Service.Interfaces;
+﻿using JaVisitei.Brasil.Business.Service.Interfaces;
+using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {

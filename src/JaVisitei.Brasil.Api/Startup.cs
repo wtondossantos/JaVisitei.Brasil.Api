@@ -9,15 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using JaVisitei.Brasil.Data.Repository.Interfaces;
-using JaVisitei.Brasil.Service.Interfaces;
-using JaVisitei.Brasil.Service.Services;
 using JaVisitei.Brasil.Data.Repository.Repositories;
 using JaVisitei.Brasil.Data.Base;
+using JaVisitei.Brasil.Business.Service;
+using JaVisitei.Brasil.Business.Service.Interfaces;
+using System.Text;
+using System;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -90,7 +90,10 @@ namespace JaVisitei.Brasil.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            //var config = new MapperConfiguration(c => c.CreateMap<Visita, VisitaAdicionarViewModel>());
+            //var config = new MapperConfiguration(c =>
+            //    {
+            //        c.CreateMap<LoginRequest, Model.Models.UsuarioEntity>();
+            //    });
             //IMapper mapper = config.CreateMapper();
             //services.AddSingleton(mapper);
 
