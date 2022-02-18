@@ -40,6 +40,7 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 /src/JaVisitei.MapaBrasil.Api/Properties/launchSettings.json
+*.launchSettings.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -48,6 +49,7 @@ Generated\ Files/
 # NUNIT
 *.VisualState.xml
 TestResult.xml
+
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
