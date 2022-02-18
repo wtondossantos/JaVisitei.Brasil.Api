@@ -39,8 +39,8 @@ bld/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
-/src/JaVisitei.MapaBrasil.Api/Properties/launchSettings.json
-*.launchSettings.json
+/src/JaVisitei.MapaBrasil.Api/Properties
+
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
