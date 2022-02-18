@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\JaVisitei.Brasil.Api\JaVisitei.Brasil.Api.csproj" />
+    <ProjectReference Include="..\JaVisitei.Brasil.Api\JaVisitei.Brasil.Api.csproj" />
   </ItemGroup>
 
 </Project>

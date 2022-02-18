@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JaVisitei.Brasil.Api", "src\JaVisitei.Brasil.Api\JaVisitei.Brasil.Api.csproj", "{F816696A-D62B-4B22-80C7-5F27B244A684}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JaVisitei.Brasil.Test", "JaVisitei.Brasil.Test\JaVisitei.Brasil.Test.csproj", "{6E07113C-98A1-4032-82DD-5CBE81B27E86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JaVisitei.Brasil.Test", "src\JaVisitei.Brasil.Test\JaVisitei.Brasil.Test.csproj", "{02DFBEFD-977F-4E2D-BB9A-33ECAF5B473D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{F816696A-D62B-4B22-80C7-5F27B244A684}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F816696A-D62B-4B22-80C7-5F27B244A684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F816696A-D62B-4B22-80C7-5F27B244A684}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E07113C-98A1-4032-82DD-5CBE81B27E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E07113C-98A1-4032-82DD-5CBE81B27E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E07113C-98A1-4032-82DD-5CBE81B27E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E07113C-98A1-4032-82DD-5CBE81B27E86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02DFBEFD-977F-4E2D-BB9A-33ECAF5B473D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02DFBEFD-977F-4E2D-BB9A-33ECAF5B473D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02DFBEFD-977F-4E2D-BB9A-33ECAF5B473D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02DFBEFD-977F-4E2D-BB9A-33ECAF5B473D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
