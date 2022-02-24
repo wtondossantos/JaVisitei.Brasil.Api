@@ -16,4 +16,4 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file ./src/Dockerfile --tag release-container-sample:$(date +%s)
+      run: docker build -f ./src/Dockerfile -t wtondossantos/javisiteiapi:v1 .
