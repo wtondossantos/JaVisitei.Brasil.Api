@@ -11,10 +11,10 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN unzip awscliv2.zip && ./aws/install
 RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
 RUN dotnet codeartifact-creds install
-RUN dotnet codeartifact-creds configure set profile ${{ secrets.AWS_USER_CONFIG }}
-RUN aws configure set region "us-east-1" --profile ${{ secrets.AWS_USER_CONFIG }}
-RUN aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile ${{ secrets.AWS_USER_CONFIG }}
-RUN aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile ${{ secrets.AWS_USER_CONFIG }}
+RUN dotnet codeartifact-creds configure set profile user1
+RUN aws configure set region "us-east-1" --profile user1
+RUN aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
+RUN aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
 COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
