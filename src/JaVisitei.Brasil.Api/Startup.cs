@@ -32,7 +32,7 @@ namespace JaVisitei.Brasil.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connetionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            var connetionString = Configuration["Connection:Base"];
             services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString)));
 
             services.AddControllers()
@@ -111,10 +111,10 @@ namespace JaVisitei.Brasil.Api
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:JWT_KEY"])),
                     ClockSkew = TimeSpan.FromMinutes(15),
-                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+                    ValidIssuer = Configuration["JWT:JWT_ISSUER"],
+                    ValidAudience = Configuration["JWT:JWT_AUDIENCE"],
                 };
             });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o => Configuration.Bind("CookieSettings", o));
 

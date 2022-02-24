@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:59902",
+      "sslPort": 44390
+    }
+  },
+  "profiles": {
+    "Prodution": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/v1/perfil",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Prodution"
+      }
+    },
+    "Development": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/v1/perfil",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "JaVisitei.Brasil.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/v1/perfil",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Prodution"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
+}

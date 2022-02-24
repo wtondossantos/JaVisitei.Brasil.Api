@@ -22,6 +22,5 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-**/src/JaVisitei.MapaBrasil.Api/Properties/launchSettings.json
 LICENSE
 README.md
