@@ -13,7 +13,53 @@ jobs:
     name: Build    
     runs-on: ubuntu-latest
     steps:
+   
+    - name: Setup .NET CORE
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+        
+    - name: Restore dependencies
+      run: dotnet restore ./src/
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
+      
+    - name: Tests
+      run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
+      
+  deploy:
+    name: Deploy  
+    runs-on: ubuntu-latest
+    environment:
+      name: prd
+    needs: build
+    
+    steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Build the Docker image
+      
+    - name: AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_KEY }}
+        role-duration-seconds: 1200
+        aws-region: us-east-1
+        
+    - name: Publish
+      run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
+
+    - uses: microsoft/variable-substitution@v1 
+      with:
+        files: '${{ github.workspace }}/app/publish/appsettings.json'
+      env:
+        Connection.Base: ${{ secrets.API_CONNECTION }}
+        JWT.JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+        JWT.JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+        JWT.JWT_KEY: ${{ secrets.JWT_KEY }}
+        JWT.JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
+
+    - name: Docker image
       run: docker build -f ./src/Dockerfile -t wtondossantos/javisiteiapi:v1 .
+      
