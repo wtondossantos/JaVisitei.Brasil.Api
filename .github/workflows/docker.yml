@@ -62,4 +62,3 @@ jobs:
 
     - name: Docker image
       run: docker build -f ./src/Dockerfile -t wtondossantos/javisiteiapi:v1 .
-      
