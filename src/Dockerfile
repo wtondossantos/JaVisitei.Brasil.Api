@@ -24,7 +24,7 @@ EXPOSE 443
 #
 #WORKDIR "/JaVisitei.Brasil.Api"
 #RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
-#
+
 #FROM build AS publish
 #RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
 
