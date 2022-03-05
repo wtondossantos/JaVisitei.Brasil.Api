@@ -31,7 +31,7 @@ jobs:
         dotnet codeartifact-creds install
         
     - name: Consume Nuget CodeArtifact
-      run: dotnet add package javisitei.brasil.nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+      run: dotnet nuget add source ${{ secrets.AWS_PACKAGE }} -n ${{ secrets.AWS_DOMAIN }}/${{ secrets.AWS_REPOSITORY }} -u ${{ secrets.AWS_USER }} -p "${CODEARTIFACT_AUTH_TOKEN}"
 
     - name: Restore dependencies
       run: dotnet restore ./src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
