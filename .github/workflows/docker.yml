@@ -47,15 +47,25 @@ jobs:
         
     #- name: Consume Nuget CodeArtifact
     #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
-
+    
     - name: Restore dependencies
-      run: dotnet restore ./src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
-      
+      run: dotnet restore ./src/
+
     - name: Build
-      run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
-      
+      run: dotnet build --configuration Release --no-restore ./src/
+
     - name: Tests
       run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
+
+
+    #- name: Restore dependencies
+    #  run: dotnet restore ./src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+      
+    #- name: Build
+    #  run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
+      
+    #- name: Tests
+    #  run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
   deploy:
     name: Deploy  
