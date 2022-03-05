@@ -30,9 +30,9 @@ jobs:
       with:
         #aws-access-key-id: ${{ secrets.AWS_ID }}
         #aws-secret-access-key: ${{ secrets.AWS_KEY }}
-        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-        role-duration-seconds: 1200
         aws-region: us-east-1
+        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+        #role-duration-seconds: 1200
 
     - name: Install CodeArtifact
       run: |
