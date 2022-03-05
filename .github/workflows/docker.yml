@@ -44,7 +44,7 @@ jobs:
         #aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
         
     - name: Consume Nuget CodeArtifact
-      run: dotnet add JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget -v 1.0.2 -s ${{ secrets.AWS_PACKAGE }}
+      run: dotnet add JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
     - name: Restore dependencies
       run: dotnet restore ./src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
