@@ -24,6 +24,11 @@ jobs:
     #- uses: nuget/setup-nuget@v1
     #  with:
     #    nuget-api-key: ${{ secrets.NuGetAPIKey }}
+    
+    - name: Install CodeArtifact
+      run: |
+        dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
+        dotnet codeartifact-creds install
 
     - name: AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -33,11 +38,6 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
         role-duration-seconds: 1200
         aws-region: us-east-1
-
-    - name: Install CodeArtifact
-      run: |
-        dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
-        dotnet codeartifact-creds install
         
     - name: Consume Nuget CodeArtifact
       run: dotnet add package javisitei.brasil.nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
