@@ -54,16 +54,16 @@ jobs:
       run: ls
 
     - name: Restore dependencies
-      run: dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
 
     #- name: Restore dependencies
     #  run: dotnet restore ./src/
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore ./src/
+      run: dotnet build --configuration Release --no-restore src/
 
     - name: Tests
-      run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
+      run: dotnet test --no-restore --verbosity normal src/JaVisitei.Brasil.Test
 
 
     #- name: Restore dependencies
