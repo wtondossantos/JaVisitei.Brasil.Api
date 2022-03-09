@@ -30,7 +30,7 @@ jobs:
       id: install-aws-cli
       uses: unfor19/install-aws-cli-action@master
       with:
-        version: 2.x
+        version: 2
 
     - name: Install CodeArtifact
       run: |
