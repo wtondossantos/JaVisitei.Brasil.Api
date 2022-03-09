@@ -31,7 +31,8 @@ jobs:
       run: |
         dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
         dotnet codeartifact-creds install
-        dotnet codeartifact-creds configure set profile user1
+        dotnet nuget locals all --clear
+        #dotnet codeartifact-creds configure set profile user1
         #aws configure set region "us-east-1" --profile user1
         #aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
         #aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
