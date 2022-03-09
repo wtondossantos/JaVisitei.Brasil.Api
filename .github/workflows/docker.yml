@@ -51,7 +51,10 @@ jobs:
     #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
     
     - name: Restore dependencies
-      run: dotnet restore ./src/
+      run: dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+
+    #- name: Restore dependencies
+    #  run: dotnet restore ./src/
 
     - name: Build
       run: dotnet build --configuration Release --no-restore ./src/
