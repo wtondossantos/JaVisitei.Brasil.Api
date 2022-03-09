@@ -22,7 +22,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-
+        
     - name: Install AWS CLI
       id: install-aws-cli
       uses: unfor19/install-aws-cli-action@master
@@ -59,14 +59,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
-    #- name: AWS credentials
-    #  uses: aws-actions/configure-aws-credentials@v1
-    #  with:
-    #    role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-    #    aws-access-key-id: ${{ secrets.AWS_ID }}
-    #    aws-secret-access-key: ${{ secrets.AWS_KEY }}
-    #    role-duration-seconds: 1200
-    #    aws-region: us-east-1
+    - name: AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+        aws-access-key-id: ${{ secrets.AWS_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_KEY }}
+        role-duration-seconds: 1200
+        aws-region: us-east-1
+        
+    - name: Consume Nuget CodeArtifact
+      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
