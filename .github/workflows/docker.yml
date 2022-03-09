@@ -37,6 +37,9 @@ jobs:
         #aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
         #aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
         
+    - name: Consume Nuget CodeArtifact
+      run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+
     - name: AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -45,9 +48,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
         aws-region: us-east-1
         role-duration-seconds: 1200
-
-    #- name: Consume Nuget CodeArtifact
-    #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
     
     - name: Restore dependencies
       run: dotnet restore ./src/
