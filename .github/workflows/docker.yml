@@ -9,8 +9,8 @@ on:
       - release
   
 jobs:
-  build:
-    name: Build    
+  pipeline:
+    name: Pipeline    
     runs-on: ubuntu-latest
     environment:
       name: prd
@@ -48,28 +48,17 @@ jobs:
     - name: Tests
       run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
-  deploy:
-    name: Deploy  
-    runs-on: ubuntu-latest
-    environment:
-      name: prd
-    needs: build
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      
-    - name: AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-        aws-access-key-id: ${{ secrets.AWS_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_KEY }}
-        role-duration-seconds: 1200
-        aws-region: us-east-1
+    #- name: AWS credentials
+    #  uses: aws-actions/configure-aws-credentials@v1
+    #  with:
+    #    role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+    #    aws-access-key-id: ${{ secrets.AWS_ID }}
+    #    aws-secret-access-key: ${{ secrets.AWS_KEY }}
+    #    role-duration-seconds: 1200
+    #    aws-region: us-east-1
         
     - name: Consume Nuget CodeArtifact
-      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
