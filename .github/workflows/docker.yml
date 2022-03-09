@@ -26,12 +26,17 @@ jobs:
     #- uses: nuget/setup-nuget@v1
     #  with:
     #    nuget-api-key: ${{ secrets.NuGetAPIKey }}
-    
+    - name: Install AWS CLI
+      id: install-aws-cli
+      uses: unfor19/install-aws-cli-action@master
+      with:
+        version: 2.x
+
     - name: Install CodeArtifact
       run: |
-        apt-get update && apt install unzip && apt-get install -y curl 
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip && ./aws/install --update
+        #apt-get update && apt install unzip && apt-get install -y curl 
+        #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        #unzip awscliv2.zip && ./aws/install --update
         dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
         dotnet codeartifact-creds install
         dotnet nuget locals all --clear
