@@ -40,7 +40,7 @@ jobs:
         aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
     - name: Restore dependencies
-      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -v 1.0.2
+      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
   
     - name: Build
       run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
@@ -59,14 +59,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
-    - name: AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-        aws-access-key-id: ${{ secrets.AWS_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_KEY }}
-        role-duration-seconds: 1200
-        aws-region: us-east-1
+    #- name: AWS credentials
+    #  uses: aws-actions/configure-aws-credentials@v1
+    #  with:
+    #    role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+    #    aws-access-key-id: ${{ secrets.AWS_ID }}
+    #    aws-secret-access-key: ${{ secrets.AWS_KEY }}
+    #    role-duration-seconds: 1200
+    #    aws-region: us-east-1
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
