@@ -29,25 +29,19 @@ jobs:
     
     - name: Install CodeArtifact
       run: |
+        apt-get update && apt install unzip && apt-get install -y curl
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip && ./aws/install
         dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
         dotnet codeartifact-creds install
         dotnet nuget locals all --clear
-        #dotnet codeartifact-creds configure set profile user1
-        #aws configure set region "us-east-1" --profile user1
-        #aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
-        #aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
-        
-    - name: Consume Nuget CodeArtifact
-      run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+        dotnet codeartifact-creds configure set profile user1
+        aws configure set region "us-east-1" --profile user1
+        aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
+        aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
-    - name: AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-        aws-access-key-id: ${{ secrets.AWS_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_KEY }}
-        aws-region: us-east-1
-        role-duration-seconds: 1200
+    #- name: Consume Nuget CodeArtifact
+    #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
     
     - name: Restore dependencies
       run: dotnet restore ./src/
@@ -79,6 +73,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
+    - name: AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+        aws-access-key-id: ${{ secrets.AWS_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_KEY }}
+        role-duration-seconds: 1200
+        aws-region: us-east-1
+
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
 
