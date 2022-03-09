@@ -50,6 +50,9 @@ jobs:
     #- name: Consume Nuget CodeArtifact
     #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
     
+    - name: List
+      run: ls
+
     - name: Restore dependencies
       run: dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
 
