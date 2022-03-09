@@ -23,11 +23,6 @@ jobs:
       with:
         dotnet-version: 3.1.x
 
-    #- name: Nuget Command
-    #  uses: actions/checkout@master
-    #- uses: nuget/setup-nuget@v1
-    #  with:
-    #    nuget-api-key: ${{ secrets.NuGetAPIKey }}
     - name: Install AWS CLI
       id: install-aws-cli
       uses: unfor19/install-aws-cli-action@master
@@ -44,11 +39,8 @@ jobs:
         aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
         aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
-    #- name: Consume Nuget CodeArtifact
-    #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
-    
     - name: Restore dependencies
-      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -v 1.0.2
   
     - name: Build
       run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
