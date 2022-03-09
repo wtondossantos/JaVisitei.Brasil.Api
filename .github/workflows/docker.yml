@@ -36,9 +36,6 @@ jobs:
 
     - name: Install CodeArtifact
       run: |
-        #apt-get update && apt install unzip && apt-get install -y curl 
-        #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        #unzip awscliv2.zip && ./aws/install --update
         dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
         dotnet codeartifact-creds install
         dotnet nuget locals all --clear
@@ -50,30 +47,14 @@ jobs:
     #- name: Consume Nuget CodeArtifact
     #  run: dotnet add ./src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
     
-    - name: List
-      run: ls
-
     - name: Restore dependencies
       run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
-
-    #- name: Restore dependencies
-    #  run: dotnet restore ./src/
-
+  
     - name: Build
-      run: dotnet build --configuration Release --no-restore src/
-
+      run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
+      
     - name: Tests
-      run: dotnet test --no-restore --verbosity normal src/JaVisitei.Brasil.Test
-
-
-    #- name: Restore dependencies
-    #  run: dotnet restore ./src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
-      
-    #- name: Build
-    #  run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
-      
-    #- name: Tests
-    #  run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
+      run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
   deploy:
     name: Deploy  
