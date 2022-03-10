@@ -30,6 +30,11 @@ EXPOSE 443
 
 FROM base AS final
 RUN ls
+RUN cd home 
+RUN ls
+RUN cd .. 
+RUN cd usr 
+RUN ls
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]
