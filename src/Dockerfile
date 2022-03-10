@@ -22,11 +22,11 @@ EXPOSE 443
 #RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -s "https://api.nuget.org/v3/index.json"
 #COPY . .
 #
-#WORKDIR "/JaVisitei.Brasil.Api"
-#RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
+WORKDIR "/JaVisitei.Brasil.Api"
+RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
 
-#FROM build AS publish
-#RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
+FROM build AS publish
+RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
