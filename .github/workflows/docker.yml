@@ -48,15 +48,6 @@ jobs:
     - name: Tests
       run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
-    #- name: AWS credentials
-    #  uses: aws-actions/configure-aws-credentials@v1
-    #  with:
-    #    role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-    #    aws-access-key-id: ${{ secrets.AWS_ID }}
-    #    aws-secret-access-key: ${{ secrets.AWS_KEY }}
-    #    role-duration-seconds: 1200
-    #    aws-region: us-east-1
-        
     - name: Consume Nuget CodeArtifact
       run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
@@ -80,4 +71,4 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         
     - name: Docker image
-      run: docker build -f ./src/Dockerfile -t wtondossantos/javisiteiapi:v1 .
+      run: docker build -f ./src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1 .
