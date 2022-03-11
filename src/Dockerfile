@@ -17,7 +17,7 @@ ENV PATH $PATH:/root/.dotnet/tools
 #RUN aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 #
 COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-RUN dotnet restore
+RUN dotnet restore src/JaVisitei.Brasil.Api/*.csproj
 #COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 #
 #RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -s "https://api.nuget.org/v3/index.json"
@@ -30,7 +30,6 @@ FROM build AS publish
 RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
-RUN ls
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]
