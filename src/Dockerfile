@@ -16,7 +16,7 @@ ENV PATH $PATH:/root/.dotnet/tools
 #RUN aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
 #RUN aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 #
-COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 RUN dotnet restore
 #COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 #
