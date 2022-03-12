@@ -11,8 +11,7 @@ RUN --mount=type=secret,id=AWS_PACKAGE \
 	--mount=type=secret,id=AWS_KEY \
    export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE) && \
    export AWS_ID=$(cat /run/secrets/AWS_ID) && \
-   export AWS_KEY=$(cat /run/secrets/AWS_KEY) && \
-   yarn gen
+   export AWS_KEY=$(cat /run/secrets/AWS_KEY)
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip && ./aws/install
