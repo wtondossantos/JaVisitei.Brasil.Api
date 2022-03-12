@@ -64,11 +64,11 @@ jobs:
         JWT.JWT_KEY: ${{ secrets.JWT_KEY }}
         JWT.JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
         
-    #- name: Docker Hub
-    #  uses: docker/login-action@v1
-    #  with:
-    #    username: ${{ secrets.DOCKER_HUB_USERNAME }}
-    #    password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    - name: Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         
     #- name: Docker Image
     #  run: docker build -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1 .
@@ -79,9 +79,7 @@ jobs:
        push: true
        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
        secrets: |
-            "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}"
-            "DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
-            "AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}"
+            "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}"
             
     #- name: Docker Push
     #  run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
