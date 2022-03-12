@@ -20,7 +20,7 @@ RUN --mount=type=secret,id=AWS_PACKAGE \
 #
 COPY . .
 COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-RUN dotnet restore JaVisitei.Brasil.Api/*.csproj
+RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
 #COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 #COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 #
