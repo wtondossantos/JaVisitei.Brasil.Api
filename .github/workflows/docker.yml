@@ -74,16 +74,16 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         
-    - name: Docker Image
-      run: docker build -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1 .
+    #- name: Docker Image
+    #  run: docker build -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1 .
       
-    #- name: Docker Build and Push
-    #  uses: docker/build-push-action@v2
-    #  with:
-    #   context: .
-    #   file: src/Dockerfile
-    #   push: true
-    #   tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
+    - name: Docker Build and Push
+      uses: docker/build-push-action@v2
+      with:
+       context: .
+       file: src/Dockerfile
+       push: true
+       tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
     #   secrets: |
     #        "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}" 
     #        "AWS_ID=${{ secrets.AWS_ID }}" 
