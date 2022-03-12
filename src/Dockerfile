@@ -4,11 +4,19 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+RUN --mount=type=secret,id=AWS_PACKAGE \
+  --mount=type=secret,id=AWS_ID \
+  --mount=type=secret,id=AWS_KEY
+  export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE) && \
+  export AWS_ID=$(cat /run/secrets/AWS_ID) && \
+  export AWS_KEY=$(cat /run/secrets/AWS_KEY) &&
+  python genenv.py
+
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ENV PATH $PATH:/root/.dotnet/tools
-RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
-RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
-RUN --mount=type=secret,id=AWS_KEY export AWS_KEY=$(cat /run/secrets/AWS_KEY)
+#RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
+#RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
+#RUN --mount=type=secret,id=AWS_KEY export AWS_KEY=$(cat /run/secrets/AWS_KEY)
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
