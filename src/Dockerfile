@@ -6,6 +6,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ENV PATH $PATH:/root/.dotnet/tools
+RUN --mount=type=secret,id=DOCKER_HUB_USERNAME \
+  --mount=type=secret,id=DOCKER_HUB_ACCESS_TOKEN \
+  --mount=type=secret,id=AWS_PACKAGE \
+   export DOCKER_HUB_USERNAME=$(cat /run/secrets/DOCKER_HUB_USERNAME) && \
+   export DOCKER_HUB_ACCESS_TOKEN=$(cat /run/secrets/DOCKER_HUB_ACCESS_TOKEN) && \
+   export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE) && \
+   yarn gen
 #RUN apt-get update && apt install unzip && apt-get install -y curl
 #RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 #RUN unzip awscliv2.zip && ./aws/install
@@ -27,6 +34,7 @@ RUN dotnet restore JaVisitei.Brasil.Api/*.csproj
 #
 WORKDIR "/JaVisitei.Brasil.Api"
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
+RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
 FROM build AS publish
 RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
