@@ -81,10 +81,11 @@ jobs:
       uses: docker/build-push-action@v2
       with:
        context: .
-       platforms: linux/amd64,linux/arm64
+       file: src/Dockerfile
        push: true
        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
-       #file: src/Dockerfile
+       cache-from: type=local,src=/tmp/.buildx-cache
+       cache-to: type=local,dest=/tmp/.buildx-cache
        secrets: |
             "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}"
             
