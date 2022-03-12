@@ -1,13 +1,13 @@
 FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 MAINTAINER Wellington dos Santos Castor
-#WORKDIR /app
+WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 #
 ##RUN --mount=type=secret,id=AWS_PACKAGE 
 ##  export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+#FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 #ENV PATH $PATH:/root/.dotnet/tools
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
@@ -43,6 +43,5 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 
 FROM base AS final
 WORKDIR /app
-RUN ls -la
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]
