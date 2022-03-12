@@ -23,36 +23,36 @@ jobs:
       with:
         dotnet-version: 3.1.x
         
-    #- name: Install AWS CLI
-    #  id: install-aws-cli
-    #  uses: unfor19/install-aws-cli-action@master
-    #  with:
-    #    version: 2
+    - name: Install AWS CLI
+      id: install-aws-cli
+      uses: unfor19/install-aws-cli-action@master
+      with:
+        version: 2
 
-    #- name: Install CodeArtifact
-    #  run: |
-    #    dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
-    #    dotnet codeartifact-creds install
-    #    dotnet nuget locals all --clear
-    #    dotnet codeartifact-creds configure set profile user1
-    #    aws configure set region "us-east-1" --profile user1
-    #    aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
-    #    aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
+    - name: Install CodeArtifact
+      run: |
+        dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
+        dotnet codeartifact-creds install
+        dotnet nuget locals all --clear
+        dotnet codeartifact-creds configure set profile user1
+        aws configure set region "us-east-1" --profile user1
+        aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
+        aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
-    #- name: Restore dependencies
-    #  run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+    - name: Restore dependencies
+      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
   
-    #- name: Build
-    #  run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
+    - name: Build
+      run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
       
-    #- name: Tests
-    #  run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
+    - name: Tests
+      run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
-    #- name: Consume Nuget CodeArtifact
-    #  run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+    - name: Consume Nuget CodeArtifact
+      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
 
-    #- name: Publish
-    #  run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
+    - name: Publish
+      run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
       
     - uses: microsoft/variable-substitution@v1 
       with:
