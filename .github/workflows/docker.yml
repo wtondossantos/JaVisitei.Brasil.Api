@@ -90,7 +90,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
        context: .
-       #file: src/Dockerfile
+       file: src/Dockerfile
        builder: ${{ steps.buildx.outputs.name }}
        push: true
        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
