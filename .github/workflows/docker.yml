@@ -84,7 +84,7 @@ jobs:
        platforms: linux/amd64,linux/arm64
        push: true
        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
-       file: src/Dockerfile
+       #file: src/Dockerfile
        secrets: |
             "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}"
             
