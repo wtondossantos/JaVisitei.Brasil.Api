@@ -32,7 +32,7 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ##
 #RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "${AWS_PACKAGE}"
 ##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -s "https://api.nuget.org/v3/index.json"
-COPY . .
+#COPY . .
 
 #WORKDIR "/JaVisitei.Brasil.Api"
 #RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
