@@ -41,6 +41,8 @@ EXPOSE 443
 #FROM build AS publish
 #RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
 
+#COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
