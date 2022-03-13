@@ -71,6 +71,7 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
       
+    - name: Configure AppSettings
     - uses: microsoft/variable-substitution@v1 
       with:
         files: '${{ github.workspace }}/app/publish/appsettings.json'
@@ -95,7 +96,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f src/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
