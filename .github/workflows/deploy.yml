@@ -8,7 +8,7 @@ on:
     branches:
       - release
   
-#env:
+env:
 #  AWS_REGION: MY_AWS_REGION                   # set this to your preferred AWS region, e.g. us-west-1
 #  ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
 #  ECS_CLUSTER: MY_ECS_CLUSTER                 # set this to your Amazon ECS cluster name
@@ -16,7 +16,7 @@ on:
 #                                               # file, e.g. .aws/task-definition.json
 #  CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
 #                                               # containerDefinitions section of your task definition
-  #AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
+  AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
 
 jobs:
   pipeline:
@@ -57,7 +57,7 @@ jobs:
         aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
 
     - name: Restore dependencies
-      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+      run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE
   
     - name: Build
       run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
@@ -66,7 +66,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
       
     - name: Consume Nuget CodeArtifact
-      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source ${{ secrets.AWS_PACKAGE }}
+      run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source $AWS_PACKAGE
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
@@ -95,7 +95,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -f src/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -e AWS_PACKAGE=${{ secrets.AWS_PACKAGE }} .
+        docker build -f src/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
