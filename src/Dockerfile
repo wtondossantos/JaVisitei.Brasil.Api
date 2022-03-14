@@ -4,9 +4,9 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 #
-#RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #ENV PATH $PATH:/root/.dotnet/tools
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
@@ -26,19 +26,19 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 
 ##COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 ##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "${AWS_PACKAGE}"
-#COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-#COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
+COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 ##
-#RUN dotnet restore JaVisitei.Brasil.Api/*.csproj
-##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -s "https://api.nuget.org/v3/index.json"
+#RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "https://api.nuget.org/v3/index.json"
+RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE
 COPY . .
 
-#WORKDIR "/JaVisitei.Brasil.Api"
-#RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
+WORKDIR "/JaVisitei.Brasil.Api"
+RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
 
-#FROM build AS publish
-#RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
+FROM build AS publish
+RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
 
  #COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 
