@@ -80,12 +80,6 @@ jobs:
         JWT.JWT_KEY: ${{ secrets.JWT_KEY }}
         JWT.JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
         
-    - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        secrets: |
-            "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}"
-
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -100,7 +94,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -f src/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -f src/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -e AWS_PACKAGE = ${{ secrets.AWS_PACKAGE }}.
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
