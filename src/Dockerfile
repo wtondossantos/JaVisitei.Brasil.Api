@@ -4,8 +4,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 #
-RUN --mount=type=secret,id=AWS_PACKAGE 
-  export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
+#RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 #ENV PATH $PATH:/root/.dotnet/tools
