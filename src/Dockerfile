@@ -26,10 +26,10 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 
 ##COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 ##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "${AWS_PACKAGE}"
-COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
+COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 ##
-#RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "${AWS_PACKAGE}"
+#RUN dotnet restore JaVisitei.Brasil.Api/*.csproj
 ##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }} -s "https://api.nuget.org/v3/index.json"
 COPY . .
 
