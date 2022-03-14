@@ -30,7 +30,7 @@ COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 ##
 #RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "https://api.nuget.org/v3/index.json"
-RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s ${{ secrets.AWS_PACKAGE }}
+RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE
 COPY . .
 
 WORKDIR "/JaVisitei.Brasil.Api"
