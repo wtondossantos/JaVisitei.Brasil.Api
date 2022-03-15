@@ -7,6 +7,7 @@ EXPOSE 443
 #
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ARG AWS_PACKAGE
+RUN printenv
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #ENV PATH $PATH:/root/.dotnet/tools
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
