@@ -29,18 +29,17 @@ RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 
 #
 #RUN ls -l
-WORKDIR /src
 
 ##COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 ##RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "${AWS_PACKAGE}"
-COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
+COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 ##
 #RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s "https://api.nuget.org/v3/index.json"
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
 
-WORKDIR "src/JaVisitei.Brasil.Api"
+WORKDIR "JaVisitei.Brasil.Api"
 COPY . .
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /api/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
