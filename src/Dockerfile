@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 MAINTAINER Wellington dos Santos Castor
-WORKDIR /app
+WORKDIR /api
 EXPOSE 80
 EXPOSE 443
 #
@@ -40,15 +40,15 @@ RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api
 COPY . .
 
 WORKDIR "/JaVisitei.Brasil.Api"
-RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
+RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /api/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
 
 FROM build AS publish
-RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no-restore
+RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /api/publish --no-restore
 
  #COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /api/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]
