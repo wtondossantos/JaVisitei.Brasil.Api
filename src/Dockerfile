@@ -9,9 +9,9 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ARG AWS_PACKAGE
 ARG AWS_ID
 ARG AWS_KEY
-RUN printenv
+#RUN printenv
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
-#ENV PATH $PATH:/root/.dotnet/tools
+ENV PATH $PATH:/root/.dotnet/tools
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
 #RUN --mount=type=secret,id=AWS_KEY export AWS_KEY=$(cat /run/secrets/AWS_KEY)
