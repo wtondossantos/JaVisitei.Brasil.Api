@@ -17,12 +17,12 @@ RUN printenv
 #RUN apt-get update && apt install unzip && apt-get install -y curl
 #RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 #RUN unzip awscliv2.zip && ./aws/install
-#RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
-#RUN dotnet codeartifact-creds install
-#RUN dotnet codeartifact-creds configure set profile user1
-#RUN aws configure set region "us-east-1" --profile user1
-#RUN aws configure set aws_access_key_id "${AWS_ID}" --profile user1
-#RUN aws configure set aws_secret_access_key "${AWS_KEY}" --profile user1
+RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
+RUN dotnet codeartifact-creds install
+RUN dotnet codeartifact-creds configure set profile user1
+RUN aws configure set region "us-east-1" --profile user1
+RUN aws configure set aws_access_key_id $AWS_ID --profile user1
+RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 #
 #RUN ls -l
 
