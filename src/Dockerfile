@@ -7,16 +7,18 @@ EXPOSE 443
 #
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ARG AWS_PACKAGE
-RUN printenv
+ARG AWS_ID
+ARG AWS_KEY
+#RUN printenv
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #ENV PATH $PATH:/root/.dotnet/tools
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
 #RUN --mount=type=secret,id=AWS_ID export AWS_ID=$(cat /run/secrets/AWS_ID)
 #RUN --mount=type=secret,id=AWS_KEY export AWS_KEY=$(cat /run/secrets/AWS_KEY)
 
-#RUN apt-get update && apt install unzip && apt-get install -y curl
-#RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-#RUN unzip awscliv2.zip && ./aws/install
+RUN apt-get update && apt install unzip && apt-get install -y curl
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip && ./aws/install
 RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
 RUN dotnet codeartifact-creds install
 RUN dotnet codeartifact-creds configure set profile user1
