@@ -44,7 +44,7 @@ RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
 
 FROM build AS publish
-RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no-restore
 
  #COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
 
