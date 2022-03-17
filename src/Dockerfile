@@ -11,7 +11,7 @@ ARG AWS_ID
 ARG AWS_KEY
 #RUN printenv
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
-ENV PATH $PATH:/root/.dotnet/tools
+#ENV PATH $PATH:/root/.dotnet/tools
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -29,8 +29,8 @@ COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Tes
 
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
+WORKDIR "src/JaVisitei.Brasil.Api"
 COPY . .
-WORKDIR "JaVisitei.Brasil.Api"
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
 
