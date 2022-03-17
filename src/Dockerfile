@@ -11,7 +11,7 @@ ARG AWS_ID
 ARG AWS_KEY
 #RUN printenv
 #RUN --mount=type=secret,id=AWS_PACKAGE export AWS_PACKAGE=$(cat /run/secrets/AWS_PACKAGE)
-#ENV PATH $PATH:/root/.dotnet/tools
+ENV PATH $PATH:/root/.dotnet/tools
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
