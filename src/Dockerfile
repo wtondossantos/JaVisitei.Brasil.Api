@@ -25,8 +25,8 @@ RUN aws configure set aws_access_key_id $AWS_ID --profile user1
 RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 
 WORKDIR /src
-COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
+COPY ./JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY ./JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
