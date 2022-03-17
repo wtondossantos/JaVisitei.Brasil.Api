@@ -93,7 +93,7 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         #docker run --env-file ./env.list -e AWS_PACKAGE=$AWS_PACKAGE
-        docker build --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
+        docker build --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src/JaVisitei.Brasil.Api/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
