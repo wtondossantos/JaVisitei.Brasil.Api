@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 MAINTAINER Wellington dos Santos Castor
-#WORKDIR /source
+WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
@@ -24,13 +24,14 @@ RUN aws configure set region "us-east-1" --profile user1
 RUN aws configure set aws_access_key_id $AWS_ID --profile user1
 RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 
-COPY src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
-COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
+WORKDIR /src
+COPY JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj JaVisitei.Brasil.Api/
+COPY JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Test/
 
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
-WORKDIR "src/JaVisitei.Brasil.Api"
 COPY . .
+WORKDIR "JaVisitei.Brasil.Api"
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build
  ##RUN dotnet add "JaVisitei.Brasil.Api.csproj" package JaVisitei.Brasil.Nuget --version 1.0.2 --source "${AWS_PACKAGE}"
 
