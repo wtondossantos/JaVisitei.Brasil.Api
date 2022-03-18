@@ -29,7 +29,7 @@ COPY src/JaVisitei.Brasil.Test/JaVisitei.Brasil.Test.csproj JaVisitei.Brasil.Tes
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
 WORKDIR "src/JaVisitei.Brasil.Api"
-#COPY . .
+COPY . .
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build --no-restore
  
 
