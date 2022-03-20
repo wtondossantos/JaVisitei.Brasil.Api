@@ -15,8 +15,8 @@ env:
 #  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
 #                                               # file, e.g. .aws/task-definition.json
 #  CONTAINER_NAME: ""           # set this to the name of the container in the
-  API_CONNECTION: ${{ secrets.API_CONNECTION }}
   AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
+  API_CONNECTION: ${{ secrets.API_CONNECTION }}
   JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
   JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
   JWT_KEY: ${{ secrets.JWT_KEY }}
