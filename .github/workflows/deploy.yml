@@ -1,4 +1,4 @@
-name: Pipeline API
+#name: Pipeline API
 
 on: 
   push: 
@@ -16,6 +16,7 @@ env:
 #                                               # file, e.g. .aws/task-definition.json
 #  CONTAINER_NAME: ""           # set this to the name of the container in the
   AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
   pipeline:
@@ -38,9 +39,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ID }}
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
         aws-region: "${{ secrets.AWS_REGION }}"
-
-    - name: Folder
-      run: ls
+        
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -56,10 +55,6 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Folder
-      run: |
-        ls
-        cd $DOTNET_ROOT ls
     #- name: Fill in the new image ID in the Amazon ECS task definition
     #  id: task-def
     #  uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -75,46 +70,3 @@ jobs:
     #    service: ${{ env.ECS_SERVICE }}
     #    cluster: ${{ env.ECS_CLUSTER }}
     #    wait-for-service-stability: true
-
-    #- name: Docker Buildx
-    #  id: buildx
-    #  uses: docker/setup-buildx-action@v1
-
-    #- name: Cache Docker layers
-    #  uses: actions/cache@v2
-    #  with:
-    #    path: /tmp/.buildx-cache
-    #    key: ${{ runner.os }}-buildx-${{ github.sha }}
-    #    restore-keys: |
-    #      ${{ runner.os }}-buildx-
-
-    #- name: Docker Hub
-    #  if: github.event_name != 'pull_request'
-    #  uses: docker/login-action@v1
-    #  with:
-    #    username: ${{ secrets.DOCKER_HUB_USERNAME }}
-    #    password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-        
-    #- name: Docker Image
-    #  run: docker build -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1 .
-      
-    #- name: Docker Build and Push
-    #  uses: docker/build-push-action@v2
-    #  with:
-    #   context: .
-    #   file: src/Dockerfile
-    #   builder: ${{ steps.buildx.outputs.name }}
-    #   push: true
-    #   tags: ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
-    #   cache-from: type=local,src=/tmp/.buildx-cache
-    #   cache-to: type=local,dest=/tmp/.buildx-cache
-    ##   secrets: |
-    ##        "AWS_PACKAGE=${{ secrets.AWS_PACKAGE }}" 
-    ##        "AWS_ID=${{ secrets.AWS_ID }}" 
-    ##        "AWS_KEY=${{ secrets.AWS_KEY }}" 
-            
-    ##- name: Docker Push
-    ##  run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/javisiteiapi:v1
-    
-    #- name: Image digest
-    #  run: echo ${{ steps.docker_build.outputs.digest }}
