@@ -14,8 +14,7 @@ env:
 #  ECS_CLUSTER: MY_ECS_CLUSTER                 # set this to your Amazon ECS cluster name
 #  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
 #                                               # file, e.g. .aws/task-definition.json
-#  CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
-#                                               # containerDefinitions section of your task definition
+  CONTAINER_NAME: "javisitei"           # set this to the name of the container in the
   AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
 
 jobs:
@@ -81,6 +80,8 @@ jobs:
     #    JWT.JWT_KEY: ${{ secrets.JWT_KEY }}
     #    JWT.JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
         
+    - name: Folder
+      run: ls
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -92,18 +93,17 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} 
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        #docker run --env-file ./env.list -e AWS_PACKAGE=$AWS_PACKAGE
         docker build --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    #- name: Fill in the new image ID in the Amazon ECS task definition
-    #  id: task-def
-    #  uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #  with:
-    #    task-definition: ${{ env.ECS_TASK_DEFINITION }}
-    #    container-name: ${{ env.CONTAINER_NAME }}
-    #    image: ${{ steps.build-image.outputs.image }}
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
 
     #- name: Deploy Amazon ECS task definition
     #  uses: aws-actions/amazon-ecs-deploy-task-definition@v1
