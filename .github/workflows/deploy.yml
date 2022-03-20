@@ -1,4 +1,4 @@
-#name: Pipeline API
+name: Pipeline API
 
 on: 
   push: 
