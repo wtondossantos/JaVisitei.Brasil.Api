@@ -6,10 +6,16 @@ EXPOSE 443
 
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+ARG JWT_SUBJECT
 ARG AWS_PACKAGE
-#ARG AWS_ID
-#ARG AWS_KEY
+ARG AWS_ID
+ARG AWS_KEY
 ENV PATH $PATH:/root/.dotnet/tools
+ENV JWT:JWT_SUBJECT $JWT_SUBJECT
+ENV JWT:JWT_KEY $JWT_KEY
+ENV JWT:JWT_ISSUER $JWT_ISSUER
+ENV JWT:JWT_AUDIENCE $JWT_AUDIENCE
+ENV JWT:API_CONNECTION $API_CONNECTION
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -18,9 +24,9 @@ RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
 RUN dotnet codeartifact-creds install
 RUN dotnet nuget locals all --clear
 RUN dotnet codeartifact-creds configure set profile user1
-RUN aws configure set region $AWS_DEFAULT_REGION --profile user1
-RUN aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile user1
-RUN aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile user1
+RUN aws configure set region "us-east-1" --profile user1
+RUN aws configure set aws_access_key_id $AWS_ID --profile user1
+RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 
 WORKDIR /src
 COPY src/ ./
@@ -37,5 +43,10 @@ RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no
 
 FROM base AS final
 WORKDIR /app
+RUN dotnet user-secrets set "JWT:API_CONNECTION" $API_CONNECTION
+RUN dotnet user-secrets set "JWT:JWT_AUDIENCE" $JWT_AUDIENCE
+RUN dotnet user-secrets set "JWT:JWT_ISSUER" $JWT_ISSUER
+RUN dotnet user-secrets set "JWT:JWT_KEY" $JWT_KEY
+RUN dotnet user-secrets set "JWT:JWT_SUBJECT" $JWT_SUBJECT
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]

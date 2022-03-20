@@ -15,7 +15,12 @@ env:
 #  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
 #                                               # file, e.g. .aws/task-definition.json
 #  CONTAINER_NAME: ""           # set this to the name of the container in the
+  API_CONNECTION: ${{ secrets.API_CONNECTION }}
   AWS_PACKAGE: ${{ secrets.AWS_PACKAGE }}
+  JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+  JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+  JWT_KEY: ${{ secrets.JWT_KEY }}
+  JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
 
 jobs:
   pipeline:
@@ -93,10 +98,10 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} 
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
+        docker build --build-arg API_CONNECTION=$API_CONNECTION --build-arg JWT_AUDIENCE=$JWT_AUDIENCE --build-arg JWT_ISSUER=$JWT_ISSUER --build-arg JWT_KEY=$JWT_KEY --build-arg JWT_SUBJECT=$JWT_SUBJECT --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        
+
     - name: Folder
       run: |
         ls
