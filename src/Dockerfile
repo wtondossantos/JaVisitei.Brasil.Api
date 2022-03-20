@@ -10,12 +10,17 @@ ARG JWT_SUBJECT
 ARG AWS_PACKAGE
 ARG AWS_ID
 ARG AWS_KEY
+ARG JWT_SUBJECT
+ARG JWT_KEY
+ARG JWT_ISSUER
+ARG JWT_AUDIENCE
+ARG API_CONNECTION
 ENV PATH $PATH:/root/.dotnet/tools
-ENV JWT_SUBJECT $JWT_SUBJECT
-ENV JWT_KEY $JWT_KEY
-ENV JWT_ISSUER $JWT_ISSUER
-ENV JWT_AUDIENCE $JWT_AUDIENCE
-ENV API_CONNECTION $API_CONNECTION
+#ENV JWT:JWT_SUBJECT $JWT_SUBJECT
+#ENV JWT:JWT_KEY $JWT_KEY
+#ENV JWT:JWT_ISSUER $JWT_ISSUER
+#ENV JWT:JWT_AUDIENCE $JWT_AUDIENCE
+#ENV Connection:Base $API_CONNECTION
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -43,7 +48,7 @@ RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no
 
 FROM base AS final
 WORKDIR /app
-RUN dotnet user-secrets set "JWT:API_CONNECTION" $API_CONNECTION
+RUN dotnet user-secrets set "Connection:Base" $API_CONNECTION
 RUN dotnet user-secrets set "JWT:JWT_AUDIENCE" $JWT_AUDIENCE
 RUN dotnet user-secrets set "JWT:JWT_ISSUER" $JWT_ISSUER
 RUN dotnet user-secrets set "JWT:JWT_KEY" $JWT_KEY
