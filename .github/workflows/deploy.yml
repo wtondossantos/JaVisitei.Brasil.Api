@@ -58,7 +58,7 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ secrets.AWS_ECS_REPOSITORY }}
+        task-definition: ${{ secrets.AWS_ECS_REPOSITORY }}.json
         container-name: ${{ secrets.AWS_ECS_CONTAINER }}
         image: ${{ steps.build-image.outputs.image }}
 
@@ -66,6 +66,6 @@ jobs:
     #  uses: aws-actions/amazon-ecs-deploy-task-definition@v1
     #  with:
     #    task-definition: ${{ steps.task-def.outputs.task-definition }}
-    #    service: ${{ env.ECS_SERVICE }}
-    #    cluster: ${{ env.ECS_CLUSTER }}
+    #    service: ${{ secrets.AWS_ECS_SERVICE }}
+    #    cluster: ${{ secrets.AWS_ECS_CLUSTER }}
     #    wait-for-service-stability: true
