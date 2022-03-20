@@ -48,7 +48,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} 
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG: v1 #${{ github.sha }}
       run: |
         docker build --build-arg AWS_REGION=$AWS_REGION --build-arg API_CONNECTION="${{ secrets.API_CONNECTION }}" --build-arg JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" --build-arg JWT_ISSUER="${{ secrets.JWT_ISSUER }}" --build-arg JWT_KEY="${{ secrets.JWT_KEY }}" --build-arg JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
