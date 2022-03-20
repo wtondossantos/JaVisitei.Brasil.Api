@@ -1,4 +1,4 @@
-#name: Pipeline API
+name: Pipeline API
 
 on: 
   push: 
@@ -37,48 +37,8 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ID }}
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
-        aws-region: "us-east-1"
+        aws-region: "${{ secrets.AWS_REGION }}"
 
-    #- name: Install AWS CLI
-    #  id: install-aws-cli
-    #  uses: unfor19/install-aws-cli-action@master
-    #  with:
-    #    version: 2
-
-    #- name: Install CodeArtifact
-    #  run: |
-    #    dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
-    #    dotnet codeartifact-creds install
-    #    dotnet nuget locals all --clear
-    #    dotnet codeartifact-creds configure set profile user1
-    #    aws configure set region "us-east-1" --profile user1
-    #    aws configure set aws_access_key_id ${{ secrets.AWS_ID }} --profile user1
-    #    aws configure set aws_secret_access_key ${{ secrets.AWS_KEY }} --profile user1
-
-    #- name: Restore dependencies
-    #  run: dotnet restore src/JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE
-  
-    #- name: Build
-    #  run: dotnet build --configuration Release --no-restore ./src/JaVisitei.Brasil.Api
-    #- name: Tests
-    #  run: dotnet test --no-restore --verbosity normal ./src/JaVisitei.Brasil.Test
-      
-    #- name: Consume Nuget CodeArtifact
-    #  run: dotnet add src/JaVisitei.Brasil.Api/JaVisitei.Brasil.Api.csproj package JaVisitei.Brasil.Nuget --version 1.0.2 --source $AWS_PACKAGE
-
-    #- name: Publish
-    #  run: dotnet publish -c Release -o '${{ github.workspace }}/app/publish'
-      
-    #- uses: microsoft/variable-substitution@v1 
-    #  with:
-    #    files: '${{ github.workspace }}/app/publish/appsettings.json'
-    #  env:
-    #    Connection.Base: ${{ secrets.API_CONNECTION }}
-    #    JWT.JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
-    #    JWT.JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
-    #    JWT.JWT_KEY: ${{ secrets.JWT_KEY }}
-    #    JWT.JWT_SUBJECT: ${{ secrets.JWT_SUBJECT }}
-        
     - name: Folder
       run: ls
     - name: Login to Amazon ECR
@@ -92,7 +52,7 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} 
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build --build-arg API_CONNECTION="${{ secrets.API_CONNECTION }}" --build-arg JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" --build-arg JWT_ISSUER="${{ secrets.JWT_ISSUER }}" --build-arg JWT_KEY="${{ secrets.JWT_KEY }}" --build-arg JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
+        docker build --build-arg AWS_REGION=$AWS_REGION --build-arg API_CONNECTION="${{ secrets.API_CONNECTION }}" --build-arg JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" --build-arg JWT_ISSUER="${{ secrets.JWT_ISSUER }}" --build-arg JWT_KEY="${{ secrets.JWT_KEY }}" --build-arg JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" --build-arg AWS_PACKAGE=$AWS_PACKAGE --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src//Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
