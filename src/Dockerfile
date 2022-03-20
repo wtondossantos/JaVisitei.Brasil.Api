@@ -7,8 +7,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 ARG AWS_PACKAGE
-ARG AWS_ID
-ARG AWS_KEY
+#ARG AWS_ID
+#ARG AWS_KEY
 ENV PATH $PATH:/root/.dotnet/tools
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
@@ -18,9 +18,9 @@ RUN dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
 RUN dotnet codeartifact-creds install
 RUN dotnet nuget locals all --clear
 RUN dotnet codeartifact-creds configure set profile user1
-RUN aws configure set region "us-east-1" --profile user1
-RUN aws configure set aws_access_key_id $AWS_ID --profile user1
-RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
+RUN aws configure set region $AWS_DEFAULT_REGION --profile user1
+RUN aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile user1
+RUN aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile user1
 
 WORKDIR /src
 COPY src/ ./
