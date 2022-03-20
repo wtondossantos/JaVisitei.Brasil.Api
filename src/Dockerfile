@@ -17,6 +17,10 @@ ARG JWT_AUDIENCE
 ARG API_CONNECTION
 ENV PATH $PATH:/root/.dotnet/tools
 ENV Connection:Base $API_CONNECTION
+ENV JWT:JWT_AUDIENCE $JWT_AUDIENCE
+ENV JWT:JWT_ISSUER $JWT_ISSUER
+ENV JWT:JWT_KEY $JWT_KEY
+ENV JWT:JWT_SUBJECT $JWT_SUBJECT
 
 RUN apt-get update && apt install unzip && apt-get install -y curl
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -42,10 +46,10 @@ RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no
 
 FROM base AS final
 WORKDIR /app
-RUN dotnet user-secrets set "Connection:Base" $API_CONNECTION
-RUN dotnet user-secrets set "JWT:JWT_AUDIENCE" $JWT_AUDIENCE
-RUN dotnet user-secrets set "JWT:JWT_ISSUER" $JWT_ISSUER
-RUN dotnet user-secrets set "JWT:JWT_KEY" $JWT_KEY
-RUN dotnet user-secrets set "JWT:JWT_SUBJECT" $JWT_SUBJECT
+#RUN dotnet user-secrets set "Connection:Base" $API_CONNECTION
+#RUN dotnet user-secrets set "JWT:JWT_AUDIENCE" $JWT_AUDIENCE
+#RUN dotnet user-secrets set "JWT:JWT_ISSUER" $JWT_ISSUER
+#RUN dotnet user-secrets set "JWT:JWT_KEY" $JWT_KEY
+#RUN dotnet user-secrets set "JWT:JWT_SUBJECT" $JWT_SUBJECT
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "JaVisitei.Brasil.Api.dll"]
