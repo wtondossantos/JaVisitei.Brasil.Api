@@ -115,7 +115,7 @@ namespace JaVisitei.Brasil.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
                     ClockSkew = TimeSpan.FromMinutes(15),
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
                 };
             });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o => Configuration.Bind("CookieSettings", o));
 
