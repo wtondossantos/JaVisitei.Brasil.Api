@@ -32,8 +32,6 @@ namespace JaVisitei.Brasil.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Environment.GetEnvironmentVariable("CONNETION_BASE");
-
             //var connetionString = Configuration["Connection:Base"];
             var connetionString = Environment.GetEnvironmentVariable("CONNETION_BASE");
             services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString)));
