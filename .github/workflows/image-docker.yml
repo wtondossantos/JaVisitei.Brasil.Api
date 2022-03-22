@@ -13,10 +13,11 @@ env:
 
 jobs:
   pipeline:
-    name: Pipeline    
+
     runs-on: ubuntu-latest
     environment:
       name: prd
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
