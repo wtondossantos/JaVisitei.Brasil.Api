@@ -47,9 +47,4 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
       
     #- name: Docker Run
-    #  run: docker run -e CONNETION_BASE="${{ secrets.API_CONNECTION }}" \
-    #    -e JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" \
-    #    -e JWT_ISSUER="${{ secrets.JWT_ISSUER }}" \
-    #    -e JWT_KEY="${{ secrets.JWT_KEY }}" \
-    #    -e JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" \
-    #    -d -p 8080:80 -it --name javisitei ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1
+    #  run: docker run -e CONNETION_BASE="${{ secrets.API_CONNECTION }}" -e JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" -e JWT_ISSUER="${{ secrets.JWT_ISSUER }}" -e JWT_KEY="${{ secrets.JWT_KEY }}" -e JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" -d -p 8080:80 -it --name javisitei ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1
