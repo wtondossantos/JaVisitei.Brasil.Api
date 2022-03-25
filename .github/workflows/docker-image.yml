@@ -45,16 +45,3 @@ jobs:
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
-      
-    - name: Deploy to Server 1
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${ { secrets.AWS_SSH }}
-        REMOTE_HOST: ${ { secrets.AWS_DNS }}
-        REMOTE_USER: ${ { secrets.AWS_USER2 }}
-        TARGET: ${ { secrets.AWS_EC2_REPOSITORY }}
-
-    - name: Update 
-      run: sudo yum update -y
-    #- name: Docker Run
-    #  run: docker run -e CONNETION_BASE="${{ secrets.API_CONNECTION }}" -e JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" -e JWT_ISSUER="${{ secrets.JWT_ISSUER }}" -e JWT_KEY="${{ secrets.JWT_KEY }}" -e JWT_SUBJECT="${{ secrets.JWT_SUBJECT }}" -d -p 8080:80 -it --name javisitei ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1
