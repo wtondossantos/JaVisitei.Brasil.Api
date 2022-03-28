@@ -1,7 +1,12 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
+using JaVisitei.Brasil.Business.Validations;
+using JaVisitei.Brasil.Business.ViewModels.Request;
+using JaVisitei.Brasil.Business.ViewModels.Response;
+using JaVisitei.Brasil.Helper;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,61 +40,61 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
-        //[HttpPost("{id_usuario}", Name = "PostVisita")]
-        //[ProducesResponseType(statusCode: 200, Type = typeof(List<Visita>))]
-        //public IActionResult Adicionar([FromRoute] int id_usuario, [FromBody] VisitaAdicionarRequest model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var validacao = new Validations();
-        //        var retorno = new ValidacaoResponse();
-        //        var mensagens = new List<string>();
-        //        var helper = new Helper();
+        [HttpPost("{id_usuario}", Name = "PostVisita")]
+        [ProducesResponseType(statusCode: 200, Type = typeof(List<Visita>))]
+        public IActionResult Adicionar([FromRoute] int id_usuario, [FromBody] VisitaAdicionarRequest model)
+        {
+            if (ModelState.IsValid)
+            {
+                var validacao = new VisitaValidation();
+                var retorno = new ValidacaoResponse();
+                var mensagens = new List<string>();
+                
 
-        //        retorno.Sucesso = false;
-        //        retorno.Codigo = 0;
+                retorno.Sucesso = false;
+                retorno.Codigo = 0;
 
-        //        try
-        //        {
-        //            if (_visita.Pesquisar(x => x.IdUsuario == id_usuario && x.IdTipoRegiao == model.IdTipoRegiao && x.IdRegiao == model.IdRegiao).ToList().Count > 0)
-        //                mensagens.Add("Visita já registrada.");
+                try
+                {
+                    if (_visita.Pesquisar(x => x.IdUsuario == id_usuario && x.IdTipoRegiao == model.IdTipoRegiao && x.IdRegiao == model.IdRegiao).ToList().Count > 0)
+                        mensagens.Add("Visita já registrada.");
 
-        //            else
-        //            {
-        //                retorno.Mensagem = validacao.ValidaRegistroVisita(model);
+                    else
+                    {
+                        retorno.Mensagem = validacao.ValidaRegistroVisita(model);
 
-        //                if (_usuario.Pesquisar(x => x.Id == id_usuario).ToList().Count <= 0)
-        //                    retorno.Mensagem.Add("Usuário não encontrado.");
+                        if (_usuario.Pesquisar(x => x.Id == id_usuario).ToList().Count <= 0)
+                            retorno.Mensagem.Add("Usuário não encontrado.");
 
-        //                if (retorno.Mensagem.Count > 0)
-        //                    return Ok(retorno);
+                        if (retorno.Mensagem.Count > 0)
+                            return Ok(retorno);
 
-        //                var visita = new Visita
-        //                {
-        //                    IdUsuario = id_usuario,
-        //                    IdTipoRegiao = model.IdTipoRegiao,
-        //                    IdRegiao = model.IdRegiao,
-        //                    Cor = model.Cor == null ? helper.RandomHexString() : model.Cor,
-        //                    Data = model.Data == null ? DateTime.Now : model.Data.GetValueOrDefault()
-        //                };
+                        var visita = new Visita
+                        {
+                            IdUsuario = id_usuario,
+                            IdTipoRegiao = model.IdTipoRegiao,
+                            IdRegiao = model.IdRegiao,
+                            Cor = model.Cor == null ? Util.RandomHexString() : model.Cor,
+                            Data = model.Data == null ? DateTime.Now : model.Data
+                        };
 
-        //                _visita.Adicionar(visita);
+                        _visita.Adicionar(visita);
 
-        //                retorno.Sucesso = true;
-        //                retorno.Codigo = 1;
-        //                retorno.Mensagem.Add("Visita registrada com sucesso.");
-        //            }
-        //        }
-        //        catch
-        //        {
-        //            retorno.Mensagem.Add("Erro ao registrar visita. Exceção.");
-        //            retorno.Codigo = -1;
-        //        }
+                        retorno.Sucesso = true;
+                        retorno.Codigo = 1;
+                        retorno.Mensagem.Add("Visita registrada com sucesso.");
+                    }
+                }
+                catch
+                {
+                    retorno.Mensagem.Add("Erro ao registrar visita. Exceção.");
+                    retorno.Codigo = -1;
+                }
 
-        //        return Ok(retorno);
+                return Ok(retorno);
 
-        //    }
-        //    return BadRequest();
-        //}
+            }
+            return BadRequest();
+        }
     }
 }
