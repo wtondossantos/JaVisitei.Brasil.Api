@@ -17,14 +17,20 @@ namespace JaVisitei.Brasil.Api.Controllers
         private readonly IMesorregiaoService _mesorreigao;
         private readonly IMicrorregiaoService _microrreigao;
         private readonly IArquipelagoService _arquipelago;
+        private readonly IMunicipioService _municipio;
+        private readonly IIlhaService _ilha;
 
         public MesorregioesController(IMesorregiaoService mesorreigao,
             IMicrorregiaoService microrreigao,
-            IArquipelagoService arquipelago)
+            IArquipelagoService arquipelago,
+            IMunicipioService municipio,
+            IIlhaService ilha)
         {
             _mesorreigao = mesorreigao;
             _microrreigao = microrreigao;
             _arquipelago = arquipelago;
+            _municipio = municipio;
+            _ilha = ilha;
         }
 
         [HttpGet(Name = "GetMesorregioes")]
@@ -64,6 +70,28 @@ namespace JaVisitei.Brasil.Api.Controllers
         public IActionResult PesquisarArquipelagos([FromRoute] string id_mesorregiao)
         {
             var model = _arquipelago.Pesquisar(x => x.IdMesorregiao == id_mesorregiao).ToList();
+
+            if (model == null)
+                return NotFound();
+
+            return Ok(model);
+        }
+
+        [HttpGet("{id_mesorregiao}/municipio/", Name = "GetMesorregiaoMunicipios")]
+        public IActionResult PesquisarMunicipios([FromRoute] string id_mesorregiao)
+        {
+            var model = _municipio.PesquisarPorMesorregiao(id_mesorregiao).ToList();
+
+            if (model == null)
+                return NotFound();
+
+            return Ok(model);
+        }
+
+        [HttpGet("{id_mesorregiao}/ilha/", Name = "GetMesorregiaoIlhas")]
+        public IActionResult PesquisarIlhas([FromRoute] string id_mesorregiao)
+        {
+            var model = _ilha.PesquisarPorMesorregiao(id_mesorregiao).ToList();
 
             if (model == null)
                 return NotFound();
