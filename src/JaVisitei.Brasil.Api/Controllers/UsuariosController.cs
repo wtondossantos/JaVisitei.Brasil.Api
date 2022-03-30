@@ -5,6 +5,7 @@ using JaVisitei.Brasil.Business.ViewModels.Response;
 using JaVisitei.Brasil.Data.Entities;
 using JaVisitei.Brasil.Helper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,25 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Usuario>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet(Name = "GetUsuarios")]
+        public IActionResult Pesquisar()
+        {
+            var lista = _usuario.Pesquisar();
+
+            if (lista == null)
+                return NotFound();
+
+            return Ok(lista);
+        }
+
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Usuario))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{username}", Name = "GetUsuarioUsername")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Usuario>))]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult PesquisarUsuarioUsername(string username)
         {
             var model = _usuario.Pesquisar(x => x.NomeUsuario == username).ToList();
@@ -41,30 +57,32 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost(Name = "PostUsuario")]
-        [ProducesResponseType(statusCode: 201)]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult AdicionarUsuario([FromBody] UsuarioAdicionarRequest model)
         {
             if (ModelState.IsValid)
             {
                 var validacao = new UsuarioValidation();
                 var retorno = new ValidacaoResponse();
-                var mensagens = new List<string>();
                 retorno.Sucesso = false;
                 retorno.Codigo = 0;
+                retorno.Mensagem = new List<string>();
 
                 try
                 {
-                    if (_usuario.Pesquisar(x => x.Email == model.Email).ToList().Count > 0)
-                        retorno.Mensagem.Add("Já existe usuário com este e-mail.");
+                    if (_usuario.Pesquisar(x => x.Email == model.Email || x.NomeUsuario == model.NomeUsuario).ToList().Count > 0)
+                    {
+                        retorno.Mensagem.Add("Já existe usuário com este e-mail e/ou usuário.");
+                        return Ok(retorno);
+                    }
 
                     else
                     {
-                        mensagens = validacao.ValidaRegistroUsuario(model);
-
-                        if (retorno.Mensagem.Count > 0)
+                        retorno.Mensagem = validacao.ValidaRegistroUsuario(model);
+                        if (retorno.Mensagem != null && retorno.Mensagem.Count > 0)
                             return Ok(retorno);
 
                         var usuario = new Usuario()
@@ -94,20 +112,20 @@ namespace JaVisitei.Brasil.Api.Controllers
             return BadRequest();
         }
 
-        [AllowAnonymous]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{id_usuario}", Name = "PostUsuarioId")]
-        [ProducesResponseType(statusCode: 201)]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult AlterarUsuario([FromRoute] int id_usuario, [FromBody] UsuarioAlterarRequest model)
         {
             if (ModelState.IsValid)
             {
                 var validacao = new UsuarioValidation();
                 var retorno = new ValidacaoResponse();
-                var mensagens = new List<string>();
                 retorno.Sucesso = false;
                 retorno.Codigo = 0;
+                retorno.Mensagem = new List<string>();
 
                 try
                 {
@@ -119,23 +137,27 @@ namespace JaVisitei.Brasil.Api.Controllers
                         return Ok(retorno);
                     }
 
+                    retorno.Mensagem = validacao.ValidaAlteracaoUsuario(model);
+
+                    if (retorno.Mensagem != null && retorno.Mensagem.Count > 0)
+                        return Ok(retorno);
+
                     var resultado = _usuario.Autenticacao(new Usuario()
                     {
                         Email = usuario.Email,
-                        Senha = Encriptar.Sha256encrypt(model.SenhaAntiga)
+                        Senha = model.SenhaAntiga
                     });
 
-                    if (resultado == null && String.IsNullOrEmpty(resultado.Senha))
+                    if (resultado == null)
+                    {
+                        retorno.Mensagem.Add("E-mail ou Senha antiga incorreto.");
+                        return Ok(retorno);
+                    }
+                    else if (String.IsNullOrEmpty(resultado.Senha) || resultado.Senha != usuario.Senha)
                     {
                         retorno.Mensagem.Add("Senha antiga incorreta.");
                         return Ok(retorno);
                     }
-
-                    mensagens = validacao.ValidaAlteracaoUsuario(model, usuario.Email);
-                    retorno.Mensagem = mensagens;
-
-                    if (retorno.Mensagem.Count > 0)
-                        return Ok(retorno);
 
                     usuario.Nome = model.Nome;
                     usuario.Sobrenome = model.Sobrenome;

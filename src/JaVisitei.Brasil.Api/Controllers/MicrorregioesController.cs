@@ -1,6 +1,7 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +25,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipio = municipio;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Microrregiao>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet(Name = "GetMicrorregioes")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Microrregiao>))]
         public IActionResult Pesquisar()
         {
             var lista = _microrreigao.Pesquisar();
@@ -36,6 +40,10 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Microrregiao))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_microrregiao}", Name = "GetMicrorregiao")]
         public IActionResult Pesquisar([FromRoute] string id_microrregiao)
         {
@@ -47,6 +55,10 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(model);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipio>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_microrregiao}/municipio/", Name = "GetMicrorregiaoMunicipios")]
         public IActionResult PesquisarMunicipios([FromRoute] string id_microrregiao)
         {

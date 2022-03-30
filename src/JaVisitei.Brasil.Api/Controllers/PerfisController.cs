@@ -4,6 +4,7 @@ using JaVisitei.Brasil.Business.ViewModels.Response;
 using JaVisitei.Brasil.Data.Entities;
 using JaVisitei.Brasil.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -31,10 +32,10 @@ namespace JaVisitei.Brasil.Api.Controllers
         public IActionResult Index() => Ok("Oi");
 
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("login", Name = "PostLogin")]
-        [ProducesResponseType(statusCode: 201)]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult Login([FromBody] LoginRequest model)
         {
             if (ModelState.IsValid)

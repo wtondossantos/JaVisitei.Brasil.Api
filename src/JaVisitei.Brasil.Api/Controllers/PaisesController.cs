@@ -1,6 +1,7 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _estado = estado;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Pais>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet(Name = "GetPaises")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Pais>))]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult Pesquisar()
         {
             var lista = _pais.Pesquisar();
@@ -37,10 +39,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Pais))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_pais}", Name = "GetPais")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(Pais))]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult Pesquisar([FromRoute] string id_pais)
         {
             var model = _pais.Pesquisar(x => x.Id == id_pais).ToList();
@@ -51,10 +54,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(model);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Estado>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_pais}/estado/", Name = "GetPaisEstados")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Estado>))]
-        [ProducesResponseType(statusCode: 404)]
-        [ProducesResponseType(statusCode: 500)]
         public IActionResult PesquisarEstados([FromRoute] string id_pais)
         {
             var model = _estado.Pesquisar(x => x.IdPais == id_pais).ToList();

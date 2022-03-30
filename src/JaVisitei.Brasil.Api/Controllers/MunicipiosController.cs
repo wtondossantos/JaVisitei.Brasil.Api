@@ -1,6 +1,7 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipio = municipio;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipio>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet(Name = "GetMunicipios")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Municipio>))]
         public IActionResult Pesquisar()
         {
             var lista = _municipio.Pesquisar();
@@ -33,8 +37,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Municipio))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_municipio}", Name = "GetMunicipio")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(Municipio))]
         public IActionResult Pesquisar([FromRoute] string id_municipio)
         {
             var model = _municipio.Pesquisar(x => x.Id == id_municipio).ToList();
