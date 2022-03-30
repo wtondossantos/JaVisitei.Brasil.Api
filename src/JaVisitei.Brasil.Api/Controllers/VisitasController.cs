@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -28,8 +29,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _usuario = usuario;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Visita>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_usuario}", Name = "GetVisitasUsuario")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Visita>))]
         public IActionResult Pesquisar([FromRoute] int id_usuario)
         {
             var lista = _visita.Pesquisar(x => x.IdUsuario == id_usuario).ToList();
@@ -40,8 +44,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{id_usuario}", Name = "PostVisita")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Visita>))]
         public IActionResult Adicionar([FromRoute] int id_usuario, [FromBody] VisitaAdicionarRequest model)
         {
             if (ModelState.IsValid)

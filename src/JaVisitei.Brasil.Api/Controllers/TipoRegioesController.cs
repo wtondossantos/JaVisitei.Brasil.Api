@@ -1,6 +1,7 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -20,8 +21,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _tiporegiao = tiporegiao;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<TipoRegiao>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("tipo", Name = "GetTipoRegioes")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<TipoRegiao>))]
         public IActionResult Pesquisar()
         {
             var lista = _tiporegiao.Pesquisar();

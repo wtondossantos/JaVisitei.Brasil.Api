@@ -1,6 +1,7 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             _ilha = ilha;
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Ilha>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet(Name = "GetIlhas")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(List<Ilha>))]
         public IActionResult Pesquisar()
         {
             var lista = _ilha.Pesquisar();
@@ -33,8 +37,11 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ilha))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id_ilha}", Name = "GetIlha")]
-        [ProducesResponseType(statusCode: 200, Type = typeof(Ilha))]
         public IActionResult Pesquisar([FromRoute] string id_ilha)
         {
             var model = _ilha.Pesquisar(x => x.Id == id_ilha).ToList();

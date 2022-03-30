@@ -25,6 +25,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _ilha = ilha;
         }
 
+        [Authorize]
         [HttpGet(Name = "GetArquipelagos")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Arquipelago>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -39,6 +40,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize]
         [HttpGet("{id_arquipelago}", Name = "GetArquipelago")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Arquipelago))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,6 +55,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             return Ok(model);
         }
 
+        [Authorize]
         [HttpGet("{id_arquipelago}/ilha/", Name = "GetArquipelagoIlhas")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Ilha>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
