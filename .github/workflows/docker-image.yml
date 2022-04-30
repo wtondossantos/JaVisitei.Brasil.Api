@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET CORE
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 6.0.x
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1

@@ -11,11 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using JaVisitei.Brasil.Data.Repository.Interfaces;
-using JaVisitei.Brasil.Data.Repository.Repositories;
 using JaVisitei.Brasil.Data.Base;
-using JaVisitei.Brasil.Business.Service;
-using JaVisitei.Brasil.Business.Service.Interfaces;
+using JaVisitei.Brasil.Business.Profiles;
+using JaVisitei.Brasil.Api.Configuration;
 using System.Text;
 using System;
 
@@ -32,9 +30,8 @@ namespace JaVisitei.Brasil.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //var connetionString = Configuration["Connection:Base"];
-            var connetionString = Environment.GetEnvironmentVariable("CONNETION_BASE");
-            services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString)));
+            var connectionString = Environment.GetEnvironmentVariable("CONNETION_BASE");
+            services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             services.AddControllers()
                 .AddJsonOptions(o =>
@@ -43,36 +40,8 @@ namespace JaVisitei.Brasil.Api
                     o.JsonSerializerOptions.MaxDepth = 0;
                 });
 
-            services.AddScoped<IPaisRepository, PaisRepository>();
-            services.AddScoped<IPaisService, PaisService>();
-
-            services.AddScoped<IEstadoRepository, EstadoRepository>();
-            services.AddScoped<IEstadoService, EstadoService>();
-
-            services.AddScoped<IMesorregiaoRepository, MesorregiaoRepository>();
-            services.AddScoped<IMesorregiaoService, MesorregiaoService>();
-
-            services.AddScoped<IMicrorregiaoRepository, MicrorregiaoRepository>();
-            services.AddScoped<IMicrorregiaoService, MicrorregiaoService>();
-
-            services.AddScoped<IArquipelagoRepository, ArquipelagoRepository>();
-            services.AddScoped<IArquipelagoService, ArquipelagoService>();
-
-            services.AddScoped<IMunicipioRepository, MunicipioRepository>();
-            services.AddScoped<IMunicipioService, MunicipioService>();
-
-            services.AddScoped<IIlhaRepository, IlhaRepository>();
-            services.AddScoped<IIlhaService, IlhaService>();
-
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
-
-            services.AddScoped<ITipoRegiaoRepository, TipoRegiaoRepository>();
-            services.AddScoped<ITipoRegiaoService, TipoRegiaoService>();
-
-            services.AddScoped<IVisitaRepository, VisitaRepository>();
-            services.AddScoped<IVisitaService, VisitaService>();
-
+            services.AddServiceDependency();
+            
             services.AddSwaggerGen(o =>
             {
                 o.SwaggerDoc("v1", new OpenApiInfo { Title = "API Já Visitei Mapa do Brasil", Version = "1" });
@@ -91,12 +60,7 @@ namespace JaVisitei.Brasil.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            //var config = new MapperConfiguration(c =>
-            //    {
-            //        c.CreateMap<LoginRequest, Model.Models.UsuarioEntity>();
-            //    });
-            //IMapper mapper = config.CreateMapper();
-            //services.AddSingleton(mapper);
+            services.AddAutoMapper(typeof(SimpleMappings));
 
             services.AddAuthentication(o =>
             {
@@ -115,7 +79,8 @@ namespace JaVisitei.Brasil.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
                     ClockSkew = TimeSpan.FromMinutes(15),
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    RequireExpirationTime = true
                 };
             });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o => Configuration.Bind("CookieSettings", o));
 
@@ -124,15 +89,15 @@ namespace JaVisitei.Brasil.Api
                 .RequireAuthenticatedUser()
                 .Build()));
 
-            services.AddMvc(o => {
+            services.AddMvc(o =>
+            {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            });
 
             services.AddHttpClient();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -141,6 +106,12 @@ namespace JaVisitei.Brasil.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(o =>
@@ -148,17 +119,9 @@ namespace JaVisitei.Brasil.Api
                 o.SwaggerEndpoint("/swagger/v1/swagger.json", "Version 1.0");
             });
 
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
             app.UseCors(o => o.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(o => {
                 o.MapControllers();

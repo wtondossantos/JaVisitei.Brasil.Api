@@ -3,14 +3,14 @@
 namespace JaVisitei.Brasil.Test
 {
     [TestClass]
-    public class UsuariosTest
+    public class UserControllerTest
     {
-        public UsuariosTest()
+        public UserControllerTest()
         {
         }
 
         [TestMethod]
-        public void PesquisarUsuarioUsername_IsValid_Usuario()
+        public void GetUserByUsernameAsync_IsValid_User()
         {
             //Assert
             Assert.IsTrue(true);
