@@ -5,42 +5,50 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:59902",
-      "sslPort": 44390
+      "sslPort": 44391
     }
   },
   "profiles": {
     "Prodution": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/v1/perfil",
+      "launchUrl": "api/v1/profiles",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Prodution",
         "CONNETION_BASE": "",
         "JWT_AUDIENCE": "",
         "JWT_ISSUER": "",
         "JWT_KEY": "",
-        "JWT_SUBJECT": ""
+        "JWT_SUBJECT": "",
+        "JWT_EXPIDED_MINUTE": ""
       }
     },
     "Development": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/v1/perfil",
+      "launchUrl": "api/v1/profiles",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CONNETION_BASE": "",
+        "JWT_AUDIENCE": "",
+        "JWT_ISSUER": "",
+        "JWT_KEY": "",
+        "JWT_SUBJECT": "",
+        "JWT_EXPIDED_MINUTE": ""
       }
     },
     "JaVisitei.Brasil.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/v1/perfil",
+      "launchUrl": "api/v1/profiles",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Prodution",
         "CONNETION_BASE": "",
         "JWT_AUDIENCE": "",
         "JWT_ISSUER": "",
         "JWT_KEY": "",
-        "JWT_SUBJECT": ""
+        "JWT_SUBJECT": "",
+        "JWT_EXPIDED_MINUTE": ""
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
