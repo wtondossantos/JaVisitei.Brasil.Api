@@ -34,13 +34,10 @@ namespace JaVisitei.Brasil.Api.Controllers
             {
                 var result = await _userService.AddAsync(request);
 
-                if (result == null || result.Validation == null)
-                    return BadRequest();
-
-                if (result.Validation.Successfully)
+                if (result.IsValid)
                     return Ok(result);
 
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return BadRequest();
         }
@@ -87,13 +84,10 @@ namespace JaVisitei.Brasil.Api.Controllers
                 request.Id = user_id;
                 var result = await _userService.EditAsync(request);
 
-                if (result == null || result.Validation == null)
-                    return BadRequest();
-
-                if (result.Validation.Successfully)
+                if (result.IsValid)
                     return Ok(result);
 
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return BadRequest();
