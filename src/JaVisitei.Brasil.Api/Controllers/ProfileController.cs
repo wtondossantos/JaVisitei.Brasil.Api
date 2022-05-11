@@ -28,6 +28,66 @@ namespace JaVisitei.Brasil.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("active_account/{activation_code}", Name = "GetActiveAccount")]
+        public async Task<IActionResult> GetActiveAccount([FromRoute] string activation_code)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _profileService.ActiveAccountAsync(activation_code);
+
+                if (result.IsValid)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
+
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("forgot_password/{email}", Name = "GetForgotPassword")]
+        public async Task<IActionResult> GetForgotPassword([FromRoute] string email)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _profileService.ForgotPasswordAsync(email);
+
+                if (result.IsValid)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
+
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("reset_password", Name = "PostResetPassword")]
+        public async Task<IActionResult> PostResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _profileService.ResetPasswordAsync(request);
+
+                if (result.IsValid)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
+
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("login", Name = "PostLogin")]
         public async Task<IActionResult> PostLoginAsync([FromBody] LoginRequest request)
         {
@@ -35,13 +95,10 @@ namespace JaVisitei.Brasil.Api.Controllers
             {
                 var result = await _profileService.LoginAsync(request);
 
-                if (result == null || result.Validation == null)
-                    return BadRequest();
-
-                if (result.Validation.Successfully)
+                if (result.IsValid)
                     return Ok(result);
 
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return BadRequest();
@@ -58,13 +115,10 @@ namespace JaVisitei.Brasil.Api.Controllers
             {
                 var result = await _profileService.LoginAsync(null);
 
-                if (result == null || result.Validation == null)
-                    return BadRequest();
-
-                if (result.Validation.Successfully)
+                if (result.IsValid)
                     return Ok(result);
 
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return BadRequest();

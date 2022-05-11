@@ -12,10 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using JaVisitei.Brasil.Data.Base;
-using JaVisitei.Brasil.Business.Profiles;
 using JaVisitei.Brasil.Api.Configuration;
 using System.Text;
 using System;
+using System.Reflection;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -60,7 +60,8 @@ namespace JaVisitei.Brasil.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            services.AddAutoMapper(typeof(SimpleMappings));
+            //services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(Assembly.Load("JaVisitei.Brasil.Business"));
 
             services.AddAuthentication(o =>
             {
@@ -72,12 +73,12 @@ namespace JaVisitei.Brasil.Api
                 o.SaveToken = true;
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
-                    ClockSkew = TimeSpan.FromMinutes(15),
+                    ClockSkew = TimeSpan.Zero,
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
                     ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
                     RequireExpirationTime = true
