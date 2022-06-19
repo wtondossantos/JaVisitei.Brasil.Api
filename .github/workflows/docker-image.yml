@@ -30,6 +30,15 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
         aws-region: "${{ secrets.AWS_REGION }}"
         
+    - name: Restore dependencies
+      run: dotnet restore ./src/
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore ./src/
+
+    - name: Tests
+      run: dotnet test --no-restore --verbosity normal ./src/
+
     - name: Docker Hub
       if: github.event_name != 'pull_request'
       uses: docker/login-action@v1
