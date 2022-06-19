@@ -1,11 +1,10 @@
 ﻿using JaVisitei.Brasil.Business.ViewModels.Request.Visit;
+using JaVisitei.Brasil.Business.ViewModels.Response.Visit;
 using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -23,38 +22,76 @@ namespace JaVisitei.Brasil.Api.Controllers
             _visitService = visitService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Visit>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{user_id}", Name = "GetUserVisits")]
-        public async Task<IActionResult> GetUserVisitsAsync([FromRoute] int user_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpPost(Name = "PostVisit")]
+        public async Task<IActionResult> PostVisitAsync([FromBody] InsertVisitRequest request)
         {
-            var result = await _visitService.GetAsync(x => x.UserId == user_id);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            if (result == null)
-                return NotFound();
+                var result = await _visitService.InsertAsync(request);
 
-            return Ok(result);
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetVisitsByUserId", new { user_id = result.Data?.UserId }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost(Name = "PostVisit")]
-        public async Task<IActionResult> PostVisitAsync([FromBody] AddVisitRequest request)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{userId}/{regionTypeId}/{regionId}", Name = "GetVisit")]
+        public async Task<IActionResult> GetVisitAsync([FromRoute] VisitKeyRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _visitService.AddAsync(request);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                if (result.IsValid)
-                    return Ok(result);
+                var result = await _visitService.GetByIdAsync<VisitResponse>(request);
 
-                return BadRequest(result);
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpDelete(Name = "DeleteVisit")]
+        public async Task<IActionResult> DeleteVisitAsync([FromBody] VisitKeyRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _visitService.DeleteAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { user_id = result.Data?.UserId }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

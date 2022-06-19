@@ -1,9 +1,9 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+using JaVisitei.Brasil.Business.ViewModels.Response.RegionType;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JaVisitei.Brasil.Api.Controllers
@@ -22,19 +22,23 @@ namespace JaVisitei.Brasil.Api.Controllers
             _regionTypeService = regionTypeService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RegionType>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetRegionTypes")]
         public async Task<IActionResult> GetRegionTypesAsync()
         {
-            var result = await _regionTypeService.GetAllAsync();
+            try
+            {
+                var result = await _regionTypeService.GetAsync<RegionTypeResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

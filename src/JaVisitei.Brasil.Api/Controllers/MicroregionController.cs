@@ -1,11 +1,11 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+﻿using JaVisitei.Brasil.Business.ViewModels.Response.Microregion;
+using JaVisitei.Brasil.Business.ViewModels.Response.Municipality;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -26,49 +26,61 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipalityService = municipalityService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Microregion>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetMicroregions")]
         public async Task<IActionResult> GetMicroregionsAsync()
         {
-            var result = await _microregionService.GetAllAsync();
+            try
+            {
+                var result = await _microregionService.GetAsync<MicroregionResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Microregion))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{microregion_id}", Name = "GetMicroregion")]
-        public async Task<IActionResult> GetMicroregionAsync([FromRoute] string microregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetMicroregion")]
+        public async Task<IActionResult> GetMicroregionAsync([FromRoute] string id)
         {
-            var result = await _microregionService.GetAsync(x => x.Id == microregion_id);
+            try
+            {
+                var result = await _microregionService.GetByIdAsync<MicroregionResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipality>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{microregion_id}/municipalities/", Name = "GetMunicipalitiesByMicroregion")]
-        public async Task<IActionResult> GetMunicipalitiesByMicroregionAsync([FromRoute] string microregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByMicroregion")]
+        public async Task<IActionResult> GetMunicipalitiesByMicroregionAsync([FromRoute] string id)
         {
-            var result = await _municipalityService.GetAsync(x => x.MicroregionId == microregion_id);
+            try
+            {
+                var result = await _municipalityService.GetAsync<MunicipalityResponse>(x => x.MicroregionId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

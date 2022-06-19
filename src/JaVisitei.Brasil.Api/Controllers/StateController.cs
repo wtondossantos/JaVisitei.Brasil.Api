@@ -1,11 +1,15 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+﻿using JaVisitei.Brasil.Business.ViewModels.Response.Archipelago;
+using JaVisitei.Brasil.Business.ViewModels.Response.Microregion;
+using JaVisitei.Brasil.Business.ViewModels.Response.Municipality;
+using JaVisitei.Brasil.Business.ViewModels.Response.Macroregion;
+using JaVisitei.Brasil.Business.ViewModels.Response.State;
+using JaVisitei.Brasil.Business.ViewModels.Response.Island;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -38,109 +42,137 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<State>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetStates")]
         public async Task<IActionResult> GetStatesAsync()
         {
-            var result = await _stateService.GetAllAsync();
+            try
+            {
+                var result = await _stateService.GetAsync<StateResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(State))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}", Name = "GetState")]
-        public async Task<IActionResult> GetStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetState")]
+        public async Task<IActionResult> GetStateAsync([FromRoute] string id)
         {
-            var result = await _stateService.GetAsync(x => x.Id == state_id);
+            try
+            {
+                var result = await _stateService.GetByIdAsync<StateResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Macroregion>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}/macroregions/", Name = "GetMacroregionsByState")]
-        public async Task<IActionResult> GetMacroregionsByStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/macroregions/", Name = "GetMacroregionsByState")]
+        public async Task<IActionResult> GetMacroregionsByStateAsync([FromRoute] string id)
         {
-            var result = await _macroregionService.GetAsync(x => x.StateId == state_id);
+            try
+            {
+                var result = await _macroregionService.GetAsync<MacroregionResponse>(x => x.StateId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Microregion>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}/microregions/", Name = "GetMicroregionsByState")]
-        public async Task<IActionResult> GetMicroregionsByStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/microregions/", Name = "GetMicroregionsByState")]
+        public async Task<IActionResult> GetMicroregionsByStateAsync([FromRoute] string id)
         {
-            var result = await _microregionService.GetByStateAsync(state_id);
+            try
+            {
+                var result = await _microregionService.GetByStateAsync<MicroregionResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Archipelago>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}/archipelagos/", Name = "GetArchipelagosByState")]
-        public async Task<IActionResult> GetArchipelagosByStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/archipelagos/", Name = "GetArchipelagosByState")]
+        public async Task<IActionResult> GetArchipelagosByStateAsync([FromRoute] string id)
         {
-            var result = await _archipelagoService.GetByStateAsync(state_id);
+            try
+            {
+                var result = await _archipelagoService.GetByStateAsync<ArchipelagoResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipality>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}/municipalities/", Name = "GetMunicipalitiesByState")]
-        public async Task<IActionResult> GetMunicipalitiesByStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByState")]
+        public async Task<IActionResult> GetMunicipalitiesByStateAsync([FromRoute] string id)
         {
-            var result = await _municipalityService.GetByStateAsync(state_id);
+            try
+            {
+                var result = await _municipalityService.GetByStateAsync<MunicipalityResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Island>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{state_id}/islands/", Name = "GetIslandsByState")]
-        public async Task<IActionResult> GetIslandsByStateAsync([FromRoute] string state_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/islands/", Name = "GetIslandsByState")]
+        public async Task<IActionResult> GetIslandsByStateAsync([FromRoute] string id)
         {
-            var result = await _islandService.GetByStateAsync(state_id);
+            try
+            {
+                var result = await _islandService.GetByStateAsync<IslandResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

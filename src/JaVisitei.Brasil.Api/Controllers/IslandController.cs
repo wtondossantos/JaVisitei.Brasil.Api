@@ -1,9 +1,8 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+using JaVisitei.Brasil.Business.ViewModels.Response.Island;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,34 +22,42 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Island>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetIslands")]
         public async Task<IActionResult> GetIslandsAsync()
         {
-            var result = await _islandService.GetAllAsync();
+            try
+            {
+                var result = await _islandService.GetAsync<IslandResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Island))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{island_id}", Name = "GetIsland")]
-        public async Task<IActionResult> GetIslandAsync([FromRoute] string island_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetIsland")]
+        public async Task<IActionResult> GetIslandAsync([FromRoute] string id)
         {
-            var result = await _islandService.GetAsync(x => x.Id == island_id);
+            try
+            {
+                var result = await _islandService.GetByIdAsync<IslandResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

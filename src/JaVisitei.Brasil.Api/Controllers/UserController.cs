@@ -1,12 +1,12 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
+﻿using JaVisitei.Brasil.Business.ViewModels.Request.User;
+using JaVisitei.Brasil.Business.ViewModels.Response.User;
+using JaVisitei.Brasil.Business.ViewModels.Response.Visit;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using JaVisitei.Brasil.Data.Entities;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
-using JaVisitei.Brasil.Business.ViewModels.Request.User;
+using System.Linq;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -17,80 +17,138 @@ namespace JaVisitei.Brasil.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IVisitService _visitService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IVisitService visitService)
         {
             _userService = userService;
+            _visitService = visitService;
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost(Name = "PostUser")]
-        public async Task<IActionResult> PostUserAsync([FromBody] AddUserRequest request)
+        public async Task<IActionResult> PostUserAsync([FromBody] InsertUserRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _userService.AddAsync(request);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                if (result.IsValid)
-                    return Ok(result);
+                var result = await _userService.InsertAsync(request);
 
-                return BadRequest(result);
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { id = result.Data?.Id }), result);
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpPut(Name = "PutUser")]
+        public async Task<IActionResult> PutUserAsync([FromBody] UpdateUserRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _userService.UpdateAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { id = result.Data?.Id }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetUsers")]
         public async Task<IActionResult> GetUsersAsync()
         {
-            var result = await _userService.GetAllAsync();
-
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
-        }
-
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{username}", Name = "GetUserByUsername")]
-        public async Task<IActionResult> GetUserByUsernameAsync(string username)
-        {
-            var result = await _userService.GetAsync(x => x.Username == username);
-
-            if (result == null)
-                return NotFound();
-
-            return Ok(result.FirstOrDefault());
-        }
-
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost("{user_id}", Name = "PostUserId")]
-        public async Task<IActionResult> PostUserIdAsync([FromRoute] int user_id, [FromBody] EditUserRequest request)
-        {
-            if (ModelState.IsValid)
+            try
             {
-                request.Id = user_id;
-                var result = await _userService.EditAsync(request);
+                var result = await _userService.GetAsync<UserResponse>();
 
-                if (result.IsValid)
-                    return Ok(result);
+                if (result is null || !result.Any())
+                    return NoContent();
 
-                return BadRequest(result);
+                return Ok(result);
             }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
-            return BadRequest();
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("username/{username}", Name = "GetUserByUsername")]
+        public async Task<IActionResult> GetUserByUsernameAsync([FromRoute] string username)
+        {
+            try
+            {
+                var result = await _userService.GetFirstOrDefaultAsync<UserResponse>(x => x.Username.Equals(username));
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetUserById")]
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] int id)
+        {
+            try
+            {
+                var result = await _userService.GetFirstOrDefaultAsync<UserResponse>(x => x.Id.Equals(id));
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/visits", Name = "GetVisits")]
+        public async Task<IActionResult> GetVisitsAsync([FromRoute] int id)
+        {
+            try
+            {
+                var result = await _visitService.GetByUserIdAsync<VisitResponse>(id);
+
+                if (result is null || !result.Any())
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

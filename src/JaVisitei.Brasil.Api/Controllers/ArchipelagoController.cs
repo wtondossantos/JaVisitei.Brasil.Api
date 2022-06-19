@@ -1,11 +1,11 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+﻿using JaVisitei.Brasil.Business.ViewModels.Response.Archipelago;
+using JaVisitei.Brasil.Business.ViewModels.Response.Island;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -25,49 +25,61 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetArchipelagos")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Archipelago>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetArchipelagosAsync()
         {
-            var result = await _archipelagoService.GetAllAsync();
+            try
+            {
+                var result = await _archipelagoService.GetAsync<ArchipelagoResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [HttpGet("{archipelago_id}", Name = "GetArchipelago")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Archipelago))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetArchipelagoAsync([FromRoute] string archipelago_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetArchipelago")]
+        public async Task<IActionResult> GetArchipelagoAsync([FromRoute] string id)
         {
-            var result = await _archipelagoService.GetAsync(x => x.Id == archipelago_id);
+            try
+            {
+                var result = await _archipelagoService.GetByIdAsync<ArchipelagoResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [HttpGet("{archipelago_id}/islands/", Name = "GetIslandsByArchipelago")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Island>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetIslandsByArchipelagoAsync([FromRoute] string archipelago_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/islands/", Name = "GetIslandsByArchipelago")]
+        public async Task<IActionResult> GetIslandsByArchipelagoAsync([FromRoute] string id)
         {
-            var result = await _islandService.GetAsync(x => x.ArchipelagoId == archipelago_id);
+            try
+            {
+                var result = await _islandService.GetAsync<IslandResponse>(x => x.ArchipelagoId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

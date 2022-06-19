@@ -1,11 +1,14 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
+﻿using JaVisitei.Brasil.Business.ViewModels.Response.Municipality;
+using JaVisitei.Brasil.Business.ViewModels.Response.Macroregion;
+using JaVisitei.Brasil.Business.ViewModels.Response.Microregion;
+using JaVisitei.Brasil.Business.ViewModels.Response.Archipelago;
+using JaVisitei.Brasil.Business.ViewModels.Response.Island;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using JaVisitei.Brasil.Data.Entities;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -35,94 +38,118 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Macroregion>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetMacroregions")]
         public async Task<IActionResult> GetMacroregionsAsync()
         {
-            var result = await _macroregionService.GetAllAsync();
+            try
+            {
+                var result = await _macroregionService.GetAsync<MacroregionResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Macroregion))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{macroregion_id}", Name = "GetMacroregion")]
-        public async Task<IActionResult> GetMacroregionAsync([FromRoute] string macroregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetMacroregion")]
+        public async Task<IActionResult> GetMacroregionAsync([FromRoute] string id)
         {
-            var result = await _macroregionService.GetAsync(x => x.Id == macroregion_id);
+            try
+            {
+                var result = await _macroregionService.GetByIdAsync<MacroregionResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Microregion>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{macroregion_id}/microregions/", Name = "GetMicroregionsByMacroregion")]
-        public async Task<IActionResult> GetMicroregionsByMacroregionAsync([FromRoute] string macroregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/microregions/", Name = "GetMicroregionsByMacroregion")]
+        public async Task<IActionResult> GetMicroregionsByMacroregionAsync([FromRoute] string id)
         {
-            var result = await _microregionService.GetAsync(x => x.MacroregionId == macroregion_id);
+            try
+            {
+                var result = await _microregionService.GetAsync<MicroregionResponse>(x => x.MacroregionId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Archipelago>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{macroregion_id}/archipelagos/", Name = "GetArchipelagosByMacroregion")]
-        public async Task<IActionResult> GetArchipelagosByMacroregionAsync([FromRoute] string macroregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/archipelagos/", Name = "GetArchipelagosByMacroregion")]
+        public async Task<IActionResult> GetArchipelagosByMacroregionAsync([FromRoute] string id)
         {
-            var result = await _archipelagoService.GetAsync(x => x.MacroregionId == macroregion_id);
+            try
+            {
+                var result = await _archipelagoService.GetAsync<ArchipelagoResponse>(x => x.MacroregionId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipality>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{macroregion_id}/municipalities/", Name = "GetMunicipalitiesByMacroregion")]
-        public async Task<IActionResult> GetMunicipalitiesByMacroregionAsync([FromRoute] string macroregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByMacroregion")]
+        public async Task<IActionResult> GetMunicipalitiesByMacroregionAsync([FromRoute] string id)
         {
-            var result = await _municipalityService.GetByMacroregionAsync(macroregion_id);
+            try
+            {
+                var result = await _municipalityService.GetByMacroregionAsync<MunicipalityResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Island>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{macroregion_id}/islands/", Name = "GetIslandsByMacroregion")]
-        public async Task<IActionResult> GetIslandsByMacroregionAsync([FromRoute] string macroregion_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/islands/", Name = "GetIslandsByMacroregion")]
+        public async Task<IActionResult> GetIslandsByMacroregionAsync([FromRoute] string id)
         {
-            var result = await _islandService.GetByMacroregionAsync(macroregion_id);
+            try
+            {
+                var result = await _islandService.GetByMacroregionAsync<IslandResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }
