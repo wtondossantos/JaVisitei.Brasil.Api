@@ -29,18 +29,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ID }}
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
         aws-region: "${{ secrets.AWS_REGION }}"
-        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
-        role-duration-seconds: 1200
         
-    - name: Restore dependencies
-      run: dotnet restore ./
-
-    - name: Build
-      run: dotnet build --configuration Release --no-restore ./src/
-
-    - name: Tests
-      run: dotnet test --no-restore --verbosity normal ./src/
-
     - name: Docker Hub
       if: github.event_name != 'pull_request'
       uses: docker/login-action@v1
