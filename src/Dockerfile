@@ -27,9 +27,7 @@ WORKDIR /src
 COPY src/ ./
 
 RUN dotnet restore JaVisitei.Brasil.Api.Test/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
-
-WORKDIR "JaVisitei.Brasil.Api.Test"
-RUN dotnet test "JaVisitei.Brasil.Api.Test.csproj" -c Release
+RUN dotnet test "JaVisitei.Brasil.Api.Test/JaVisitei.Brasil.Api.Test.csproj" -c Release
 
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
