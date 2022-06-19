@@ -1,9 +1,8 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+using JaVisitei.Brasil.Business.ViewModels.Response.Municipality;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,34 +22,42 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipalityService = municipalityService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Municipality>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetMunicipalities")]
         public async Task<IActionResult> GetMunicipalitiesAsync()
         {
-            var result = await _municipalityService.GetAllAsync();
+            try
+            {
+                var result = await _municipalityService.GetAsync<MunicipalityResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Municipality))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{municipality_id}", Name = "GetMunicipality")]
-        public async Task<IActionResult> GetMunicipalityAsync([FromRoute] string municipality_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetMunicipality")]
+        public async Task<IActionResult> GetMunicipalityAsync([FromRoute] string id)
         {
-            var result = await _municipalityService.GetAsync(x => x.Id == municipality_id);
+            try
+            {
+                var result = await _municipalityService.GetByIdAsync<MunicipalityResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

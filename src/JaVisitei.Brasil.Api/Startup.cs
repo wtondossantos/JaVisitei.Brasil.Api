@@ -60,7 +60,6 @@ namespace JaVisitei.Brasil.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            //services.AddAutoMapper(typeof(UserProfile));
             services.AddAutoMapper(Assembly.Load("JaVisitei.Brasil.Business"));
 
             services.AddAuthentication(o =>
@@ -92,8 +91,7 @@ namespace JaVisitei.Brasil.Api
 
             services.AddMvc(o =>
             {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                o.Filters.Add(new AuthorizeFilter(policy));
+                o.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
             });
 
             services.AddHttpClient();

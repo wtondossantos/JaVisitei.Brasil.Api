@@ -1,8 +1,5 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {

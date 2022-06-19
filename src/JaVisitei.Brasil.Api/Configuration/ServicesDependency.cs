@@ -17,6 +17,7 @@ namespace JaVisitei.Brasil.Api.Configuration
             services.AddScoped<ProfileValidator<ActivationResponse>, ProfileValidator<ActivationResponse>>();
             services.AddScoped<ProfileValidator<ForgotPasswordResponse>, ProfileValidator<ForgotPasswordResponse>>();
             services.AddScoped<ProfileValidator<ResetPasswordResponse>, ProfileValidator<ResetPasswordResponse>>();
+            services.AddScoped<ProfileValidator<GenerateConfirmationCodeResponse>, ProfileValidator<GenerateConfirmationCodeResponse>>();
 
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICountryService, CountryService>();

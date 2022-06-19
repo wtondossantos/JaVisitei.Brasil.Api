@@ -1,9 +1,10 @@
-﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Business.ViewModels.Request.User;
+﻿using JaVisitei.Brasil.Business.ViewModels.Request.User;
+using JaVisitei.Brasil.Business.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 
 namespace JaVisitei.Brasil.Api.Controllers
 {
@@ -22,23 +23,54 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [Authorize(Roles = "administrator")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("user", Name = "PostUserAdmin")]
-        public async Task<IActionResult> PostUserAsync([FromBody] AddFullUserRequest request)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> PostUserAsync([FromBody] InsertFullUserRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _userService.AddAsync(request);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                if (result.IsValid)
-                    return Ok(result);
+                var result = await _userService.InsertAsync(request);
 
-                return BadRequest(result);
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { id = result.Data?.Id }), result);
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator")]
+        [HttpPut("user", Name = "PutUserAdmin")]
+        public async Task<IActionResult> PutUserAsync([FromBody] UpdateFullUserRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _userService.UpdateAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { id = result.Data?.Id }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

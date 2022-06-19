@@ -1,8 +1,8 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
 using JaVisitei.Brasil.Business.ViewModels.Request.Profile;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace JaVisitei.Brasil.Api.Controllers
@@ -21,107 +21,123 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Index() => Ok("Hello");
+        [HttpGet(Name = "Hello World")]
+        public IActionResult Index() => Ok("Hello World");
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("active_account/{activation_code}", Name = "GetActiveAccount")]
-        public async Task<IActionResult> GetActiveAccount([FromRoute] string activation_code)
+        [HttpPost("active_account/{activationCode}", Name = "PostActiveAccount")]
+        public async Task<IActionResult> PostActiveAccountAsync([FromRoute] ActiveAccountRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _profileService.ActiveAccountAsync(activation_code);
+                var result = await _profileService.ActiveAccountAsync(request);
 
-                if (result.IsValid)
-                    return Ok(result);
+                if (result is null)
+                    return NotFound(result);
 
-                return BadRequest(result);
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("PostLogin", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("forgot_password/{email}", Name = "GetForgotPassword")]
-        public async Task<IActionResult> GetForgotPassword([FromRoute] string email)
+        [HttpPost("generate_confirmation_code/{email}", Name = "PostGenerateConfirmationCode")]
+        public async Task<IActionResult> PostGenerateConfirmationCodeAsync([FromRoute] GenerateConfirmationCodeRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _profileService.ForgotPasswordAsync(email);
+                var result = await _profileService.GenerateConfirmationCodeAsync(request);
 
-                if (result.IsValid)
-                    return Ok(result);
+                if (result is null)
+                    return NotFound(result);
 
-                return BadRequest(result);
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("PostActiveAccount", new { activation_code = "" }), result);
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("forgot_password/{email}", Name = "PostForgotPassword")]
+        public async Task<IActionResult> PostForgotPasswordAsync([FromRoute] ForgotPasswordRequest request)
+        {
+            try
+            {
+                var result = await _profileService.ForgotPasswordAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("PostResetPassword", new ResetPasswordRequest { ResetPasswordCode = "", Email = result.Data?.UserEmail }), result); ;
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
         [HttpPost("reset_password", Name = "PostResetPassword")]
-        public async Task<IActionResult> PostResetPassword([FromBody] ResetPasswordRequest request)
+        public async Task<IActionResult> PostResetPasswordAsync([FromBody] ResetPasswordRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var result = await _profileService.ResetPasswordAsync(request);
 
-                if (result.IsValid)
-                    return Ok(result);
+                if (result is null)
+                    return NotFound(result);
 
-                return BadRequest(result);
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("PostLogin", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("login", Name = "PostLogin")]
         public async Task<IActionResult> PostLoginAsync([FromBody] LoginRequest request)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var result = await _profileService.LoginAsync(request);
 
-                if (result.IsValid)
-                    return Ok(result);
+                if (result is null)
+                    return NotFound(result);
 
-                return BadRequest(result);
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { id = result.Data.Id }), result);
             }
-
-            return BadRequest();
-        }
-
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost("logout", Name = "PostLogout")]
-        public async Task<IActionResult> PostLogoutAsync()
-        {
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                var result = await _profileService.LoginAsync(null);
-
-                if (result.IsValid)
-                    return Ok(result);
-
-                return BadRequest(result);
+                return Problem(ex.Message);
             }
-
-            return BadRequest();
         }
     }
 }

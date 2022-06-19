@@ -1,9 +1,9 @@
 ﻿using JaVisitei.Brasil.Business.Service.Interfaces;
-using JaVisitei.Brasil.Data.Entities;
+using JaVisitei.Brasil.Business.ViewModels.Response.Country;
+using JaVisitei.Brasil.Business.ViewModels.Response.State;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,49 +25,61 @@ namespace JaVisitei.Brasil.Api.Controllers
             _stateService = stateService;
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Country>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet(Name = "GetCountries")]
         public async Task<IActionResult> GetCountriesAsync()
         {
-            var result = await _countryService.GetAllAsync();
+            try
+            {
+                var result = await _countryService.GetAsync<CountryResponse>();
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Country))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{country_id}", Name = "GetCountry")]
-        public async Task<IActionResult> GetCountryAsync([FromRoute] string country_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}", Name = "GetCountry")]
+        public async Task<IActionResult> GetCountryAsync([FromRoute] string id)
         {
-            var result = await _countryService.GetAsync(x => x.Id == country_id);
+            try
+            {
+                var result = await _countryService.GetByIdAsync<CountryResponse>(id);
 
-            if (result == null)
-                return NotFound();
+                if (result is null)
+                    return NoContent();
 
-            return Ok(result.FirstOrDefault());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<State>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{country_id}/states/", Name = "GetStatesByCountry")]
-        public async Task<IActionResult> GetStatesByCountryAsync([FromRoute] string country_id)
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/states/", Name = "GetStatesByCountry")]
+        public async Task<IActionResult> GetStatesByCountryAsync([FromRoute] string id)
         {
-            var result = await _stateService.GetAsync(x => x.CountryId == country_id);
+            try
+            {
+                var result = await _stateService.GetAsync<StateResponse>(x => x.CountryId.Equals(id));
 
-            if (result == null)
-                return NotFound();
+                if (result is null || !result.Any())
+                    return NoContent();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }
