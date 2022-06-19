@@ -31,7 +31,7 @@ jobs:
         aws-region: "${{ secrets.AWS_REGION }}"
         
     - name: Restore dependencies
-      run: dotnet restore ./src/
+      run: dotnet restore ./
 
     - name: Build
       run: dotnet build --configuration Release --no-restore ./src/
