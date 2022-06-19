@@ -26,11 +26,16 @@ RUN aws configure set aws_secret_access_key $AWS_KEY --profile user1
 WORKDIR /src
 COPY src/ ./
 
+RUN dotnet restore JaVisitei.Brasil.Api.Test/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
+
+WORKDIR "JaVisitei.Brasil.Api.Test"
+RUN dotnet test "JaVisitei.Brasil.Api.Test.csproj" -c Release
+
 RUN dotnet restore JaVisitei.Brasil.Api/*.csproj -s $AWS_PACKAGE -s "https://api.nuget.org/v3/index.json"
 
 WORKDIR "JaVisitei.Brasil.Api"
 RUN dotnet build "JaVisitei.Brasil.Api.csproj" -c Release -o /app/build --no-restore
- 
+  
 FROM build AS publish
 RUN dotnet publish "JaVisitei.Brasil.Api.csproj" -c Release -o /app/publish --no-restore
 
