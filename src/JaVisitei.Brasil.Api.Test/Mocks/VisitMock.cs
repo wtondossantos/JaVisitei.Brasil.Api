@@ -23,7 +23,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             return new InsertVisitRequest
             {
                  Color = "200,100,50",
-                 VisitationDate = "02-07-2022",
+                 VisitationDate = DateTime.Now.ToString("dd-MM-yyyy"),
                  RegionTypeId = 6,
                  RegionId = "ce_aquiraz",
                  UserId = 1
@@ -40,7 +40,7 @@ namespace JaVisitei.Brasil.Test.Mocks
                     RegionTypeId = 6,
                     RegionId = "ce_aquiraz",
                     Color = "200,100,50",
-                    VisitDate = Convert.ToDateTime("02-07-2022"),
+                    VisitDate = DateTime.Now,
                     RegistryDate = DateTime.Now
                 },
                 Message = "sucess"
@@ -85,7 +85,7 @@ namespace JaVisitei.Brasil.Test.Mocks
                 RegionTypeId = 6,
                 RegionId = "ce_aquiraz",
                 Color = "200,100,50",
-                VisitDate = Convert.ToDateTime("30-07-2022"),
+                VisitDate = DateTime.Now,
                 RegistryDate = DateTime.Now
             };
         }
@@ -98,7 +98,7 @@ namespace JaVisitei.Brasil.Test.Mocks
                 RegionTypeId = 7,
                 RegionId = "pe_ilha_de_sao_pedro_e_sao_paulo",
                 Color = "200,150,50",
-                VisitDate = Convert.ToDateTime("30-07-2022"),
+                VisitDate = DateTime.Now,
                 RegistryDate = DateTime.Now
             };
         }
