@@ -29,6 +29,8 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ID }}
         aws-secret-access-key: ${{ secrets.AWS_KEY }}
         aws-region: "${{ secrets.AWS_REGION }}"
+        role-to-assume: ${{ secrets.AWS_ARN_IAM_ROLE }}
+        role-duration-seconds: 1200
         
     - name: Restore dependencies
       run: dotnet restore ./
