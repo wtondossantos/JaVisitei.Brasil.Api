@@ -33,15 +33,29 @@ namespace JaVisitei.Brasil.Api
             var connectionString = Environment.GetEnvironmentVariable("CONNETION_BASE");
             services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+            services.AddCors(o =>
+            {
+                o.AddPolicy("MapPolicy",
+                p => {
+                    p
+                    .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
+                    .WithMethods("GET","PUT","POST","DELETE")
+                    .AllowAnyHeader();
+                });
+            });
+            //.AddPolicy("AllowSpecificOrigin", policy => policy.WithOrigins("https"));
             services.AddControllers()
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                     o.JsonSerializerOptions.MaxDepth = 0;
+                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
             services.AddServiceDependency();
-            
+
+            services.AddMemoryCache();
+
             services.AddSwaggerGen(o =>
             {
                 o.SwaggerDoc("v1", new OpenApiInfo { Title = "API Já Visitei Mapa do Brasil", Version = "1" });
@@ -82,12 +96,13 @@ namespace JaVisitei.Brasil.Api
                     ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
                     RequireExpirationTime = true
                 };
-            });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o => Configuration.Bind("CookieSettings", o));
+            });
 
-            services.AddAuthorizationCore(x => x.AddPolicy(JwtBearerDefaults.AuthenticationScheme, new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .Build()));
+            services.AddAuthorizationCore(x => x
+                .AddPolicy(JwtBearerDefaults.AuthenticationScheme, new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build()));
 
             services.AddMvc(o =>
             {
@@ -105,6 +120,8 @@ namespace JaVisitei.Brasil.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("MapPolicy");
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -117,10 +134,6 @@ namespace JaVisitei.Brasil.Api
             {
                 o.SwaggerEndpoint("/swagger/v1/swagger.json", "Version 1.0");
             });
-
-            app.UseCors(o => o.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
 
             app.UseEndpoints(o => {
                 o.MapControllers();

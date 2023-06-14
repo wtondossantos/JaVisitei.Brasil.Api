@@ -25,7 +25,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetArchipelagos")]
         public async Task<IActionResult> GetArchipelagosAsync()
         {
@@ -44,7 +44,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetArchipelago")]
         public async Task<IActionResult> GetArchipelagoAsync([FromRoute] string id)
         {
@@ -63,7 +63,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/islands/", Name = "GetIslandsByArchipelago")]
         public async Task<IActionResult> GetIslandsByArchipelagoAsync([FromRoute] string id)
         {

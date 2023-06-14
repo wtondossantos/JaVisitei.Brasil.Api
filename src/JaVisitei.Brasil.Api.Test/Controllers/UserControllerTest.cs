@@ -314,7 +314,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         [TestMethod("User by id Correct return")]
         public async Task GetUserByIdAsync_ShouldResturnSucess_UserById()
         {
-            var id = 1;
+            var id = Guid.NewGuid().ToString();
             var response = UserMock.UserActivedBasicMock();
 
             _ = _mockUserService
@@ -332,7 +332,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         [TestMethod("User by id No content")]
         public async Task GetUserByIdAsync_ShouldNoContent_UserById()
         {
-            var id = 0;
+            var id = string.Empty;
 
             _ = _mockUserService
                 .Setup(x => x.GetFirstOrDefaultAsync<UserResponse>(x => x.Id.Equals(id), null))
@@ -348,7 +348,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         public async Task GetUserByIdAsync_ShouldProbrem_Exception()
         {
             var message = "Exception test";
-            var id = 0;
+            var id = string.Empty;
 
             _ = _mockUserService
                 .Setup(x => x.GetFirstOrDefaultAsync<UserResponse>(x => x.Id.Equals(id), null))
@@ -369,7 +369,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         [TestMethod("Visits by user id Correct return")]
         public async Task GetVisitsAsync_ShouldCorrectReturn_AllVisitByUserId()
         {
-            var userId = 1;
+            var userId = Guid.NewGuid().ToString();
             var visits = VisitMock.ReturnVisitListMock();
 
             _ = _mockVisitService
@@ -386,7 +386,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         [TestMethod("Visits by user id No content")]
         public async Task GetVisitsAsync_ShouldNoContent_VisitsByUserId()
         {
-            var userId = 99;
+            var userId = Guid.NewGuid().ToString();
 
             _ = _mockVisitService
                 .Setup(x => x.GetByUserIdAsync<VisitResponse>(userId))
@@ -402,7 +402,7 @@ namespace JaVisitei.Brasil.Test.Controllers
         public async Task GetVisitsAsync_ShouldProbrem_Exception()
         {
             var message = "Exception test";
-            var userId = 99;
+            var userId = Guid.NewGuid().ToString();
 
             _ = _mockVisitService
                 .Setup(x => x.GetByUserIdAsync<VisitResponse>(userId))

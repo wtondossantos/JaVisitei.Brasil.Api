@@ -38,7 +38,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetMacroregions")]
         public async Task<IActionResult> GetMacroregionsAsync()
         {
@@ -57,7 +57,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetMacroregion")]
         public async Task<IActionResult> GetMacroregionAsync([FromRoute] string id)
         {
@@ -76,7 +76,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/microregions/", Name = "GetMicroregionsByMacroregion")]
         public async Task<IActionResult> GetMicroregionsByMacroregionAsync([FromRoute] string id)
         {
@@ -95,7 +95,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/archipelagos/", Name = "GetArchipelagosByMacroregion")]
         public async Task<IActionResult> GetArchipelagosByMacroregionAsync([FromRoute] string id)
         {
@@ -114,7 +114,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByMacroregion")]
         public async Task<IActionResult> GetMunicipalitiesByMacroregionAsync([FromRoute] string id)
         {
@@ -133,7 +133,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/islands/", Name = "GetIslandsByMacroregion")]
         public async Task<IActionResult> GetIslandsByMacroregionAsync([FromRoute] string id)
         {

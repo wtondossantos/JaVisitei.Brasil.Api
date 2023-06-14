@@ -42,7 +42,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _islandService = islandService;
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetStates")]
         public async Task<IActionResult> GetStatesAsync()
         {
@@ -61,7 +61,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetState")]
         public async Task<IActionResult> GetStateAsync([FromRoute] string id)
         {
@@ -80,7 +80,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/macroregions/", Name = "GetMacroregionsByState")]
         public async Task<IActionResult> GetMacroregionsByStateAsync([FromRoute] string id)
         {
@@ -99,7 +99,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/microregions/", Name = "GetMicroregionsByState")]
         public async Task<IActionResult> GetMicroregionsByStateAsync([FromRoute] string id)
         {
@@ -118,7 +118,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/archipelagos/", Name = "GetArchipelagosByState")]
         public async Task<IActionResult> GetArchipelagosByStateAsync([FromRoute] string id)
         {
@@ -137,7 +137,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByState")]
         public async Task<IActionResult> GetMunicipalitiesByStateAsync([FromRoute] string id)
         {
@@ -156,7 +156,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/islands/", Name = "GetIslandsByState")]
         public async Task<IActionResult> GetIslandsByStateAsync([FromRoute] string id)
         {
