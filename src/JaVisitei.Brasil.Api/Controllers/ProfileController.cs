@@ -38,7 +38,7 @@ namespace JaVisitei.Brasil.Api.Controllers
                 if (!result.IsValid || result.Data is null)
                     return BadRequest(result);
 
-                return Accepted(Url.Link("PostLogin", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
+                return Accepted(Url.Link("PostActiveAccount", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace JaVisitei.Brasil.Api.Controllers
                 if (!result.IsValid || result.Data is null)
                     return BadRequest(result);
 
-                return Accepted(Url.Link("PostLogin", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
+                return Accepted(Url.Link("PostResetPassword", new LoginRequest { Email = result.Data?.UserEmail, Password = "" }), result);
             }
             catch (Exception ex)
             {
@@ -132,7 +132,32 @@ namespace JaVisitei.Brasil.Api.Controllers
                 if (!result.IsValid || result.Data is null)
                     return BadRequest(result);
 
-                return Accepted(Url.Link("GetUserById", new { id = result.Data.Id }), result);
+                return Accepted(Url.Link("PostLogin", new { id = result.Data.Id }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("refresh_token", Name = "RefreshToken")]
+        public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _profileService.RefreshTokenAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid || result.Data is null)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("RefreshToken", new { id = result.Data.Id }), result);
             }
             catch (Exception ex)
             {

@@ -14,7 +14,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 RegionTypeId = 6,
                 RegionId = "ce_aquiraz",
-                UserId = 1
+                UserId = Guid.NewGuid().ToString()
             };
         }
 
@@ -26,7 +26,7 @@ namespace JaVisitei.Brasil.Test.Mocks
                  VisitationDate = DateTime.Now.ToString("dd-MM-yyyy"),
                  RegionTypeId = 6,
                  RegionId = "ce_aquiraz",
-                 UserId = 1
+                 UserId = Guid.NewGuid().ToString()
             };
         }
 
@@ -36,7 +36,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 Data = new VisitResponse
                 {
-                    UserId = 1,
+                    UserId = Guid.NewGuid().ToString(),
                     RegionTypeId = 6,
                     RegionId = "ce_aquiraz",
                     Color = "200,100,50",
@@ -53,7 +53,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 Data = new VisitResponse
                 {
-                    UserId = 1
+                    UserId = Guid.NewGuid().ToString()
                 },
                 Message = "sucess deletion"
             };
@@ -81,7 +81,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new VisitResponse
             {
-                UserId = 1,
+                UserId = Guid.NewGuid().ToString(),
                 RegionTypeId = 6,
                 RegionId = "ce_aquiraz",
                 Color = "200,100,50",
@@ -94,7 +94,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new VisitResponse
             {
-                UserId = 1,
+                UserId = Guid.NewGuid().ToString(),
                 RegionTypeId = 7,
                 RegionId = "pe_ilha_de_sao_pedro_e_sao_paulo",
                 Color = "200,150,50",

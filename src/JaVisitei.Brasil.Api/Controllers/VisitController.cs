@@ -93,5 +93,30 @@ namespace JaVisitei.Brasil.Api.Controllers
                 return Problem(ex.Message);
             }
         }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpPut(Name = "PutVisit")]
+        public async Task<IActionResult> PutVisitAsync([FromBody] UpdateVisitRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var result = await _visitService.UpdateAsync(request);
+
+                if (result is null)
+                    return NotFound(result);
+
+                if (!result.IsValid)
+                    return BadRequest(result);
+
+                return Accepted(Url.Link("GetUserById", new { user_id = result.Data?.UserId }), result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }

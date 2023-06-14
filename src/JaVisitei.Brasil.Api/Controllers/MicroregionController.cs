@@ -26,7 +26,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipalityService = municipalityService;
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetMicroregions")]
         public async Task<IActionResult> GetMicroregionsAsync()
         {
@@ -45,7 +45,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetMicroregion")]
         public async Task<IActionResult> GetMicroregionAsync([FromRoute] string id)
         {
@@ -64,7 +64,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/municipalities/", Name = "GetMunicipalitiesByMicroregion")]
         public async Task<IActionResult> GetMunicipalitiesByMicroregionAsync([FromRoute] string id)
         {

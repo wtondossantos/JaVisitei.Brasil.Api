@@ -44,7 +44,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetCountry")]
         public async Task<IActionResult> GetCountryAsync([FromRoute] string id)
         {
@@ -62,8 +62,8 @@ namespace JaVisitei.Brasil.Api.Controllers
                 return Problem(ex.Message);
             }
         }
-
-        [Authorize(Roles = "administrator, basic, contributor")]
+        
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}/states/", Name = "GetStatesByCountry")]
         public async Task<IActionResult> GetStatesByCountryAsync([FromRoute] string id)
         {
@@ -72,6 +72,44 @@ namespace JaVisitei.Brasil.Api.Controllers
                 var result = await _stateService.GetAsync<StateResponse>(x => x.CountryId.Equals(id));
 
                 if (result is null || !result.Any())
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/full", Name = "GetMapCountryFullByIdAsync")]
+        public async Task<IActionResult> GetMapCountryFullByIdAsync([FromRoute] string id)
+        {
+            try
+            {
+                var result = await _countryService.GetFullByIdAsync(id);
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{id}/user/{userId}/full", Name = "GetMapCountryFullByIdAndUserIdAsync")]
+        public async Task<IActionResult> GetMapCountryFullByIdAndUserIdAsync([FromRoute] string id, string userId)
+        {
+            try
+            {
+                var result = await _countryService.GetFullByIdAndUserIdAsync(id, userId);
+
+                if (result is null)
                     return NoContent();
 
                 return Ok(result);

@@ -75,7 +75,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetUsers")]
         public async Task<IActionResult> GetUsersAsync()
         {
@@ -115,7 +115,7 @@ namespace JaVisitei.Brasil.Api.Controllers
 
         [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet("{id}", Name = "GetUserById")]
-        public async Task<IActionResult> GetUserByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] string id)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace JaVisitei.Brasil.Api.Controllers
 
         [Authorize(Roles = "administrator, basic, contributor")]
         [HttpGet("{id}/visits", Name = "GetVisits")]
-        public async Task<IActionResult> GetVisitsAsync([FromRoute] int id)
+        public async Task<IActionResult> GetVisitsAsync([FromRoute] string id)
         {
             try
             {

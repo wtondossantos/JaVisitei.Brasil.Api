@@ -22,7 +22,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             _municipalityService = municipalityService;
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet(Name = "GetMunicipalities")]
         public async Task<IActionResult> GetMunicipalitiesAsync()
         {
@@ -41,7 +41,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("{id}", Name = "GetMunicipality")]
         public async Task<IActionResult> GetMunicipalityAsync([FromRoute] string id)
         {
@@ -50,6 +50,25 @@ namespace JaVisitei.Brasil.Api.Controllers
                 var result = await _municipalityService.GetByIdAsync<MunicipalityResponse>(id);
 
                 if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("search", Name = "GetMunicipalitySearch")]
+        public async Task<IActionResult> GetMunicipalitySearchAsync()
+        {
+            try
+            {
+                var result = await _municipalityService.GetAsync<MunicipalityBasicResponse>();
+
+                if (result is null || !result.Any())
                     return NoContent();
 
                 return Ok(result);

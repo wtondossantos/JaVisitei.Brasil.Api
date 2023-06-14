@@ -57,6 +57,9 @@ namespace JaVisitei.Brasil.Api.Configuration
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<EmailValidator, EmailValidator>();
+
+            services.AddScoped<IRecaptchaService, RecaptchaService>();
+            services.AddScoped<RecaptchaValidator, RecaptchaValidator>();
         }
     }
 }

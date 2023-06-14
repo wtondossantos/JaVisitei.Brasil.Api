@@ -28,7 +28,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 Data = new UserResponse
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid().ToString(),
                     Name = "Wellington",
                     Username = "wellington",
                     Surname = "Silva",
@@ -61,7 +61,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 Data = new UserResponse
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid().ToString(),
                     Name = "Wellington",
                     Username = "wellington",
                     Surname = "Silva",
@@ -78,7 +78,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new UpdateUserRequest
             {
-                Id = 3,
+                Id = Guid.NewGuid().ToString(),
                 Name = "David",
                 Surname = "Coffee",
                 Username = "wellingtonedit",
@@ -95,7 +95,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new UpdateFullUserRequest
             {
-                Id = 3,
+                Id = Guid.NewGuid().ToString(),
                 Name = "David",
                 Surname = "Coffee",
                 Username = "wellingtonedit",
@@ -115,7 +115,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             {
                 Data = new UserResponse
                 {
-                    Id = 3,
+                    Id = Guid.NewGuid().ToString(),
                     Name = "David",
                     Surname = "Coffee",
                     Username = "wellingtonedit",
@@ -144,7 +144,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new UserResponse
             {
-                Id = 1,
+                Id = Guid.NewGuid().ToString(),
                 Name = "Wellington",
                 Surname = "Silva",
                 Username = "wellington",
@@ -159,7 +159,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new UserResponse
             {
-                Id = 2,
+                Id = Guid.NewGuid().ToString(),
                 Name = "John",
                 Surname = "Bob",
                 Username = "johnbob",
@@ -174,7 +174,7 @@ namespace JaVisitei.Brasil.Test.Mocks
         {
             return new UserResponse
             {
-                Id = 3,
+                Id = Guid.NewGuid().ToString(),
                 Name = "David",
                 Surname = "Coffee",
                 Username = "wellingtonedit",
