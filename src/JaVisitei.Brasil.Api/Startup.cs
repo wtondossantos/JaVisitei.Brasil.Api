@@ -39,11 +39,12 @@ namespace JaVisitei.Brasil.Api
                 p => {
                     p
                     .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
+                    //.AllowAnyOrigin()
                     .WithMethods("GET","PUT","POST","DELETE")
                     .AllowAnyHeader();
                 });
             });
-            //.AddPolicy("AllowSpecificOrigin", policy => policy.WithOrigins("https"));
+
             services.AddControllers()
                 .AddJsonOptions(o =>
                 {
