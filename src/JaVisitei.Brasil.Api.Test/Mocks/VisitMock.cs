@@ -23,7 +23,7 @@ namespace JaVisitei.Brasil.Test.Mocks
             return new InsertVisitRequest
             {
                  Color = "200,100,50",
-                 VisitationDate = DateTime.Now.ToString("dd-MM-yyyy"),
+                 VisitationDate = DateTime.Now.ToString("yyyy-MM-dd"),
                  RegionTypeId = 6,
                  RegionId = "ce_aquiraz",
                  UserId = Guid.NewGuid().ToString()
