@@ -111,7 +111,6 @@ namespace JaVisitei.Brasil.Api
             });
 
             services.AddHttpClient();
-            services.AddSwaggerDocument();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -129,8 +128,6 @@ namespace JaVisitei.Brasil.Api
             app.UseAuthentication();
 
             app.UseAuthorization();
-
-            app.UseOpenApi();
 
             app.UseSwaggerUI(o =>
             {
