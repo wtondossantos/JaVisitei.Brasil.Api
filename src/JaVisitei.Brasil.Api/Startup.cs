@@ -38,8 +38,8 @@ namespace JaVisitei.Brasil.Api
                 o.AddPolicy("MapPolicy",
                 p => {
                     p
-                    .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
-                    //.AllowAnyOrigin()
+                    //.WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
+                    .AllowAnyOrigin()
                     .WithMethods("GET","PUT","POST","DELETE")
                     .AllowAnyHeader();
                 });
@@ -111,6 +111,7 @@ namespace JaVisitei.Brasil.Api
             });
 
             services.AddHttpClient();
+            services.AddSwaggerDocument();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -129,7 +130,7 @@ namespace JaVisitei.Brasil.Api
 
             app.UseAuthorization();
 
-            app.UseSwagger();
+            app.UseOpenApi();
 
             app.UseSwaggerUI(o =>
             {
