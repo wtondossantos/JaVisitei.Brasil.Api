@@ -48,8 +48,8 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [Authorize(Roles = "administrator, basic, contributor")]
-        [HttpGet("{userId}/{regionTypeId}/{regionId}", Name = "GetVisit")]
-        public async Task<IActionResult> GetVisitAsync([FromRoute] VisitKeyRequest request)
+        [HttpGet(Name = "GetVisit")]
+        public async Task<IActionResult> GetVisitAsync([FromBody] VisitKeyRequest request)
         {
             try
             {
