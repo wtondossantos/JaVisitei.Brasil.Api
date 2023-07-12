@@ -38,8 +38,8 @@ namespace JaVisitei.Brasil.Api
                 o.AddPolicy("MapPolicy",
                 p => {
                     p
-                    //.WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
-                    .AllowAnyOrigin()
+                    .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
+                    //.AllowAnyOrigin()
                     .WithMethods("GET","PUT","POST","DELETE")
                     .AllowAnyHeader();
                 });
