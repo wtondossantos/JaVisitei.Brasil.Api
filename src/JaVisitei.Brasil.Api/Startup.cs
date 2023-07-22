@@ -17,6 +17,7 @@ using System.Text;
 using System;
 using System.Reflection;
 using StackExchange.Redis;
+using System.Security.Authentication;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -61,8 +62,8 @@ namespace JaVisitei.Brasil.Api
                 {
                     AbortOnConnectFail = false,
                     EndPoints = { Environment.GetEnvironmentVariable("REDIS_ENDPOINT") },
-                    Password = Environment.GetEnvironmentVariable("REDIS_PASS"),
                     Ssl = false,
+                    SslProtocols = SslProtocols.Tls13,
                     ConnectTimeout = 15000,
                     SyncTimeout = 15000
                 };
