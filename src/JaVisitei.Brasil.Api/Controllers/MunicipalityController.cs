@@ -61,12 +61,12 @@ namespace JaVisitei.Brasil.Api.Controllers
         }
 
         [Authorize(Roles = "administrator, basic, contributor")]
-        [HttpGet("search", Name = "GetMunicipalitySearch")]
-        public async Task<IActionResult> GetMunicipalitySearchAsync()
+        [HttpGet("search/{countryId}", Name = "GetMunicipalityByCountryId")]
+        public async Task<IActionResult> GetMunicipalityByCountryIdAsync([FromRoute] string countryId)
         {
             try
             {
-                var result = await _municipalityService.GetAsync<MunicipalityBasicResponse>();
+                var result = await _municipalityService.GetByCountryIdAsync(countryId);
 
                 if (result is null || !result.Any())
                     return NoContent();

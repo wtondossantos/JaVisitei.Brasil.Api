@@ -2,6 +2,9 @@
 using JaVisitei.Brasil.Business.Service.Services;
 using JaVisitei.Brasil.Business.Validation.Validators;
 using JaVisitei.Brasil.Business.ViewModels.Response.Profile;
+using JaVisitei.Brasil.Caching.Service.Base;
+using JaVisitei.Brasil.Caching.Service.Interfaces;
+using JaVisitei.Brasil.Caching.Service.Services;
 using JaVisitei.Brasil.Data.Repository.Interfaces;
 using JaVisitei.Brasil.Data.Repository.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +24,7 @@ namespace JaVisitei.Brasil.Api.Configuration
 
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<ICountryCachingService, CountryCachingService>();
 
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<IStateService, StateService>();
@@ -36,6 +40,7 @@ namespace JaVisitei.Brasil.Api.Configuration
 
             services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
             services.AddScoped<IMunicipalityService, MunicipalityService>();
+            services.AddScoped<IMunicipalityCachingService, MunicipalityCachingService>();
 
             services.AddScoped<IIslandRepository, IslandRepository>();
             services.AddScoped<IIslandService, IslandService>();
@@ -60,6 +65,9 @@ namespace JaVisitei.Brasil.Api.Configuration
 
             services.AddScoped<IRecaptchaService, RecaptchaService>();
             services.AddScoped<RecaptchaValidator, RecaptchaValidator>();
+
+            services.AddScoped<ICachingService, CachingService>();
+
         }
     }
 }

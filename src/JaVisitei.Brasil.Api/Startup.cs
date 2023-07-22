@@ -16,6 +16,7 @@ using JaVisitei.Brasil.Api.Configuration;
 using System.Text;
 using System;
 using System.Reflection;
+using StackExchange.Redis;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -39,7 +40,6 @@ namespace JaVisitei.Brasil.Api
                 p => {
                     p
                     .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
-                    //.AllowAnyOrigin()
                     .WithMethods("GET","PUT","POST","DELETE")
                     .AllowAnyHeader();
                 });
@@ -55,7 +55,18 @@ namespace JaVisitei.Brasil.Api
 
             services.AddServiceDependency();
 
-            services.AddMemoryCache();
+            services.AddStackExchangeRedisCache(o => {
+                o.InstanceName = "RedisInstance";
+                o.ConfigurationOptions = new ConfigurationOptions
+                {
+                    AbortOnConnectFail = false,
+                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_ENDPOINT") },
+                    Password = Environment.GetEnvironmentVariable("REDIS_PASS"),
+                    Ssl = false,
+                    ConnectTimeout = 15000,
+                    SyncTimeout = 15000
+                };
+            });
 
             services.AddSwaggerGen(o =>
             {
