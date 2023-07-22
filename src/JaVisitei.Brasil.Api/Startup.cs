@@ -61,11 +61,7 @@ namespace JaVisitei.Brasil.Api
                 o.ConfigurationOptions = new ConfigurationOptions
                 {
                     AbortOnConnectFail = false,
-                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_ENDPOINT") },
-                    Ssl = false,
-                    SslProtocols = SslProtocols.Tls13,
-                    ConnectTimeout = 15000,
-                    SyncTimeout = 15000
+                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_ENDPOINT") }
                 };
             });
 
