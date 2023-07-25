@@ -94,7 +94,7 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator, basic, contributor")]
+        [Authorize(Roles = "administrator")]
         [HttpGet("username/{username}", Name = "GetUserByUsername")]
         public async Task<IActionResult> GetUserByUsernameAsync([FromRoute] string username)
         {
