@@ -119,5 +119,100 @@ namespace JaVisitei.Brasil.Api.Controllers
                 return Problem(ex.Message);
             }
         }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/mundi", Name = "GetByMapTypeIdAsync")]
+        public async Task<IActionResult> GetByMapTypeIdAsync([FromRoute] short mapTypeId)
+        {
+            try
+            {
+                var result = await _countryService.GetByMapTypeIdAsync(mapTypeId);
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/mundifull", Name = "GetFullByMapTypeAsync")]
+        public async Task<IActionResult> GetFullByMapTypeAsync([FromRoute] short mapTypeId)
+        {
+            try
+            {
+                var result = await _countryService.GetFullByMapTypeIdAsync(mapTypeId);
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/user/{userId}/mundi", Name = "GetByMapTypeIdAndUserIdAsync")]
+        public async Task<IActionResult> GetByMapTypeIdAndUserIdAsync([FromRoute] short mapTypeId, string userId)
+        {
+            try
+            {
+                var result = await _countryService.GetByMapTypeIdAndUserIdAsync(mapTypeId, userId);
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/user/{userId}/mundifull", Name = "GetFullByMapTypeIdAndUserIdAsync")]
+        public async Task<IActionResult> GetFullByMapTypeIdAndUserIdAsync([FromRoute] short mapTypeId, string userId)
+        {
+            try
+            {
+                var result = await _countryService.GetFullByMapTypeIdAndUserIdAsync(mapTypeId, userId);
+
+                if (result is null)
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/names/mundifull", Name = "GetCountriesNamesAsync")]
+        public async Task<IActionResult> GetCountriesNamesAsync([FromRoute] short mapTypeId)
+        {
+            try
+            {
+                var result = await _countryService.GetNamesAsync(mapTypeId);
+
+                if (result is null || !result.Any())
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }

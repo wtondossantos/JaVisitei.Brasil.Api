@@ -28,6 +28,7 @@ namespace JaVisitei.Brasil.Api.Configuration
 
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<IStateService, StateService>();
+            services.AddScoped<IStateCachingService, StateCachingService>();
 
             services.AddScoped<IMacroregionRepository, MacroregionRepository>();
             services.AddScoped<IMacroregionService, MacroregionService>();
