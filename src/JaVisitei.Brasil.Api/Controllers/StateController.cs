@@ -80,6 +80,25 @@ namespace JaVisitei.Brasil.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "administrator, basic, contributor")]
+        [HttpGet("{mapTypeId}/names/", Name = "GetStatesNamesAsync")]
+        public async Task<IActionResult> GetStatesNamesAsync([FromRoute] short mapTypeId)
+        {
+            try
+            {
+                var result = await _stateService.GetNamesAsync(mapTypeId);
+
+                if (result is null || !result.Any())
+                    return NoContent();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
         [Authorize(Roles = "administrator")]
         [HttpGet("{id}/macroregions/", Name = "GetMacroregionsByState")]
         public async Task<IActionResult> GetMacroregionsByStateAsync([FromRoute] string id)
