@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using JaVisitei.Brasil.Data.Repository.Interfaces;
-using JaVisitei.Brasil.Data.Repository.Repositories;
 using JaVisitei.Brasil.Data.Base;
-using JaVisitei.Brasil.Business.Service;
-using JaVisitei.Brasil.Business.Service.Interfaces;
+using JaVisitei.Brasil.Api.Configuration;
 using System.Text;
 using System;
+using System.Reflection;
+using StackExchange.Redis;
+using System.Security.Authentication;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -32,45 +32,38 @@ namespace JaVisitei.Brasil.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connetionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-            services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString)));
+            var connectionString = Environment.GetEnvironmentVariable("CONNETION_BASE");
+            services.AddDbContext<DbJaVisiteiBrasilContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            services.AddCors(o =>
+            {
+                o.AddPolicy("MapPolicy",
+                p => {
+                    p
+                    .WithOrigins(Environment.GetEnvironmentVariable("ORIGINS").Split(","))
+                    .WithMethods("GET","PUT","POST","DELETE")
+                    .AllowAnyHeader();
+                });
+            });
 
             services.AddControllers()
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                     o.JsonSerializerOptions.MaxDepth = 0;
+                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            services.AddScoped<IPaisRepository, PaisRepository>();
-            services.AddScoped<IPaisService, PaisService>();
+            services.AddServiceDependency();
 
-            services.AddScoped<IEstadoRepository, EstadoRepository>();
-            services.AddScoped<IEstadoService, EstadoService>();
-
-            services.AddScoped<IMesorregiaoRepository, MesorregiaoRepository>();
-            services.AddScoped<IMesorregiaoService, MesorregiaoService>();
-
-            services.AddScoped<IMicrorregiaoRepository, MicrorregiaoRepository>();
-            services.AddScoped<IMicrorregiaoService, MicrorregiaoService>();
-
-            services.AddScoped<IArquipelagoRepository, ArquipelagoRepository>();
-            services.AddScoped<IArquipelagoService, ArquipelagoService>();
-
-            services.AddScoped<IMunicipioRepository, MunicipioRepository>();
-            services.AddScoped<IMunicipioService, MunicipioService>();
-
-            services.AddScoped<IIlhaRepository, IlhaRepository>();
-            services.AddScoped<IIlhaService, IlhaService>();
-
-            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IUsuarioService, UsuarioService>();
-
-            services.AddScoped<ITipoRegiaoRepository, TipoRegiaoRepository>();
-            services.AddScoped<ITipoRegiaoService, TipoRegiaoService>();
-
-            services.AddScoped<IVisitaRepository, VisitaRepository>();
-            services.AddScoped<IVisitaService, VisitaService>();
+            services.AddStackExchangeRedisCache(o => {
+                o.InstanceName = "RedisInstance";
+                o.ConfigurationOptions = new ConfigurationOptions
+                {
+                    AbortOnConnectFail = false,
+                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_ENDPOINT") }
+                };
+            });
 
             services.AddSwaggerGen(o =>
             {
@@ -90,12 +83,7 @@ namespace JaVisitei.Brasil.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            //var config = new MapperConfiguration(c =>
-            //    {
-            //        c.CreateMap<LoginRequest, Model.Models.UsuarioEntity>();
-            //    });
-            //IMapper mapper = config.CreateMapper();
-            //services.AddSingleton(mapper);
+            services.AddAutoMapper(Assembly.Load("JaVisitei.Brasil.Business"));
 
             services.AddAuthentication(o =>
             {
@@ -107,31 +95,32 @@ namespace JaVisitei.Brasil.Api
                 o.SaveToken = true;
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"))),
-                    ClockSkew = TimeSpan.FromMinutes(15),
+                    ClockSkew = TimeSpan.Zero,
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    RequireExpirationTime = true
                 };
-            });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o => Configuration.Bind("CookieSettings", o));
+            });
 
-            services.AddAuthorizationCore(x => x.AddPolicy(JwtBearerDefaults.AuthenticationScheme, new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .Build()));
+            services.AddAuthorizationCore(x => x
+                .AddPolicy(JwtBearerDefaults.AuthenticationScheme, new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build()));
 
-            services.AddMvc(o => {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                o.Filters.Add(new AuthorizeFilter(policy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(o =>
+            {
+                o.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+            });
 
             services.AddHttpClient();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -140,24 +129,18 @@ namespace JaVisitei.Brasil.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
+            app.UseCors("MapPolicy");
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseSwaggerUI(o =>
             {
                 o.SwaggerEndpoint("/swagger/v1/swagger.json", "Version 1.0");
             });
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseCors(o => o.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(o => {
                 o.MapControllers();
