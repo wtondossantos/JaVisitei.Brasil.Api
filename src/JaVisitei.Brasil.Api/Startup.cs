@@ -16,6 +16,10 @@ using System.Text;
 using System;
 using StackExchange.Redis;
 using Asp.Versioning;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 namespace JaVisitei.Brasil.Api
 {
@@ -43,6 +47,13 @@ namespace JaVisitei.Brasil.Api
                     .AllowAnyHeader();
                 });
             });
+
+            services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"C:\temp-keys\"))
+                .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+                {
+                    EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                    ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                });
 
             services.AddControllers()
                 .AddJsonOptions(o =>
