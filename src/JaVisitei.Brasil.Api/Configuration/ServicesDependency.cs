@@ -68,7 +68,6 @@ namespace JaVisitei.Brasil.Api.Configuration
             services.AddScoped<RecaptchaValidator, RecaptchaValidator>();
 
             services.AddScoped<ICachingService, CachingService>();
-
         }
     }
 }
