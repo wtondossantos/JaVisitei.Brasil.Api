@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 MAINTAINER Wellington dos Santos Castor
 WORKDIR /app
 EXPOSE 80
