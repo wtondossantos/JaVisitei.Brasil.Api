@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JaVisitei.Brasil.Business.Validation.Validators;
 using JaVisitei.Brasil.Business.ViewModels.Request.User;
 using JaVisitei.Brasil.Business.ViewModels.Response.User;
+using JaVisitei.Brasil.Business.ViewModels.Response.Visit;
 using JaVisitei.Brasil.Api.Controllers;
 using System.Collections.Generic;
 using JaVisitei.Brasil.Test.Mocks;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Moq;
-using JaVisitei.Brasil.Business.ViewModels.Response.Visit;
 using System;
 
 namespace JaVisitei.Brasil.Test.Controllers

@@ -94,7 +94,7 @@
     //    "RECAPTCHA_CLIENT_KEY": "",
     //    "RECAPTCHA_GOOGLE_URL": "",
     //    "ORIGINS": "",
-    //"REDIS_ENDPOINT": ""
+    //    "REDIS_ENDPOINT": ""
     //  },
     //  "httpPort": 51803,
     //  "useSSL": true,

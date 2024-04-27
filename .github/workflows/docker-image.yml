@@ -37,8 +37,8 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Docker Image
-      run: docker build --build-arg AWS_REGION="${{ secrets.AWS_REGION }}" --build-arg AWS_PACKAGE=${{ secrets.AWS_PACKAGE }} --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1 --no-cache .
+    # - name: Docker Image
+    #   run: docker build --build-arg AWS_REGION="${{ secrets.AWS_REGION }}" --build-arg AWS_PACKAGE=${{ secrets.AWS_PACKAGE }} --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1 --no-cache .
 
     - name: Docker Push
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1
