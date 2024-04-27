@@ -32,7 +32,7 @@ jobs:
         
     - name: Docker Hub
       if: github.event_name != 'pull_request'
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
     #   run: docker build --build-arg AWS_REGION="${{ secrets.AWS_REGION }}" --build-arg AWS_PACKAGE=${{ secrets.AWS_PACKAGE }} --build-arg AWS_ID=${{ secrets.AWS_ID }} --build-arg AWS_KEY=${{ secrets.AWS_KEY }} -f src/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1 --no-cache .
 
     - name: Docker Push
-      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v2
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:v1
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
